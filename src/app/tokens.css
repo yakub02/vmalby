@@ -1,0 +1,27 @@
+:root {
+  --ground: #E7E1D3;
+  --ground-2: #DED6C4;
+  --ink: #211D18;
+  --ink-soft: #4A4238;
+  --oxide: #8C3B2A;
+  --oxide-soft: #B8735F;
+  --verdigris: #5C6B5D;
+  --line: #C7BCA6;
+  --card-bg: #F1ECE0;
+  --serif: "Iowan Old Style", "Sitka Text", "Palatino Linotype", Georgia, serif;
+  --sans: "Neue Haas Grotesk Text Pro", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ground: #211D18;
+    --ground-2: #2A251E;
+    --ink: #EDE6D6;
+    --ink-soft: #C9BFAC;
+    --oxide: #C97157;
+    --oxide-soft: #8C3B2A;
+    --verdigris: #8CA491;
+    --line: #4A4238;
+    --card-bg: #2A251E;
+  }
+}
