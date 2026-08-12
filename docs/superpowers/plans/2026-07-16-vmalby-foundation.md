@@ -1,5 +1,14 @@
 # V Malby — Foundation (Next.js + Sanity) Implementation Plan
 
+> ## ⛔ NEPLATNÝ PLÁN — NEEXEKVOVAT
+>
+> 2026-08-12 uživatel rozhodl, že nechce headless CMS. Sanity bylo z projektu odstraněno.
+> Platný plán je **`2026-08-12-vmalby-redakcni-system.md`** (vlastní redakční systém nad
+> Postgres + Prisma uvnitř téže Next.js aplikace).
+>
+> Z tohoto dokumentu zůstává platný jen **Task 1** (scaffold + design tokeny) — ten je hotový
+> a commitnutý. Tasky 2–11 se neexekvují. Soubor je tu jen jako historie rozhodnutí.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Stand up the technical foundation for vmalby.cz — a Next.js site backed by an embedded Sanity Studio — with the content model (Realizace, Články, Texty stránek) and an instant publish → live-site pipeline, proven end-to-end on a real deployment.

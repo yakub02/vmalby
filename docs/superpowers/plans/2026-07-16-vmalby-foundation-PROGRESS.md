@@ -1,80 +1,69 @@
-# V Malby foundation — stav exekuce
+# V Malby — stav exekuce
 
-Aktualizováno: 2026-07-16 (session 1)
+Aktualizováno: 2026-08-12 (session 2)
+
+## ⚠️ Změna architektury — Sanity je mimo hru
+
+V session 2 uživatel rozhodl, že **nechce headless CMS**. Chce jen redakční úpravu textů a článků
+po přihlášení admina, s obsahem ve vlastní databázi na vlastním hostingu (firma už běžící webhosting má).
+
+Co to znamenalo:
+- Sanity bylo odinstalováno (`sanity`, `next-sanity`, `@sanity/image-url`, `@sanity/webhook`)
+  a smazáno (`sanity.config.ts`, `sanity/`, `src/app/studio/`). Nic z toho se nestihlo commitnout.
+- **Starý plán `2026-07-16-vmalby-foundation.md` je neplatný od Tasku 2 dál.** Task 1 (scaffold
+  + design tokeny) platí a je commitnutý.
+- Design doc `specs/2026-07-16-vmalby-rebrand-design.md` má přepsaný bod 6 (technická architektura)
+  a bod 7 (fáze 1–2). Body 1–5 — cíl, IA, content model, vizuální směr — platí beze změny.
+- Nový plán: **`plans/2026-08-12-vmalby-redakcni-system.md`** (11 tasků).
 
 ## Klíčové dokumenty
-- Design doc (schválený): `docs/superpowers/specs/2026-07-16-vmalby-rebrand-design.md`
-- Implementační plán (schválený, 11 úkolů): `docs/superpowers/plans/2026-07-16-vmalby-foundation.md`
+- Design doc (schválený, aktualizovaný): `docs/superpowers/specs/2026-07-16-vmalby-rebrand-design.md`
+- Platný plán: `docs/superpowers/plans/2026-08-12-vmalby-redakcni-system.md`
+- Neplatný plán (historie): `docs/superpowers/plans/2026-07-16-vmalby-foundation.md`
 - Vizuální nástěnka (schválený směr): https://claude.ai/code/artifact/124da2a5-b8b4-4a5f-ad39-a8a41b5b4d33
 
-## Režim exekuce
-- superpowers:subagent-driven-development — na každý úkol čerstvý implementer subagent,
-  pak spec review subagent, pak code quality review subagent; opravy zpět implementerovi.
-- Git: commity do lokálního gitu odsouhlaseny (nic se nepushuje bez souhlasu).
-- Nepouštět víc implementerů paralelně nad stejným repem.
-
-## Stav úkolů
+## Stav tasků nového plánu
 | # | Úkol | Stav |
 |---|------|------|
-| 1 | Scaffold Next.js + design tokens | ✅ HOTOVO (commity `76a7444`, `107df97`; spec ✅, quality ✅ po opravách) |
-| 2 | Embed Sanity Studio | ⏸ PŘERUŠENO — dispatch implementera byl připraven, uživatel ho odmítl a session se ukládá |
-| 3 | Realizace schema | čeká |
-| 4 | Clanek schema | čeká |
-| 5 | siteTexts singleton schema | čeká |
-| 6 | Typed client + fetchers (TDD) | čeká |
-| 7 | Revalidation webhook (TDD) | čeká |
-| 8 | Homepage hero + featured grid | čeká |
-| 9 | Realizace list + detail | čeká |
-| 10 | Deploy + webhook (RUČNÍ — účty uživatele: GitHub/Vercel/Sanity) | čeká |
-| 11 | E2E ověření na živém nasazení (RUČNÍ) | čeká |
+| 1 | Prisma, databáze a obsahové modely | čeká — **blokuje ho běžící Postgres** |
+| 2 | Vitest a testovací kostra | čeká |
+| 3 | Přihlášení, podepsané session cookie, ochrana /sprava | čeká |
+| 4 | Čtecí vrstva obsahu | čeká |
+| 5 | Server actions Realizace + revalidace | čeká |
+| 6 | Server actions Články a Texty stránek | čeká |
+| 7 | Sanitizace rich textu | čeká |
+| 8 | Nahrávání fotek (sharp) | čeká |
+| 9 | Redakční rozhraní /sprava | čeká |
+| 10 | Veřejné stránky — tenký řez | čeká |
+| 11 | Nasazení na hosting (RUČNÍ) | čeká |
 
-## Task 1 — co přesně vzniklo
-- Next.js **16.2.10** (ne 15 jako v plánu!), React 19.2.4, TypeScript, App Router, src-dir,
-  alias `@/*`, bez Tailwindu, npm. Turbopack default.
-- `src/app/tokens.css` — design tokeny přesně dle nástěnky (světlý + dark režim).
-- `src/app/globals.css` — reset (`*, *::before, *::after { box-sizing: border-box }`), body na tokenech.
-- `src/app/layout.tsx` — lang="cs", metadata V Malby, importuje tokens+globals; `page.tsx` je minimální placeholder (přestaví Task 8).
-- Hygiena po review: `.claude/settings.local.json` untracknut + gitignorován; `!.env.example` v .gitignore.
-- create-next-app odmítl scaffold přímo (název složky `_VMALBY` není validní npm name) —
-  scaffoldováno přes podsložku `vmalby` a přesunuto do rootu.
-- create-next-app 16 sám vygeneroval `CLAUDE.md` (pointer na `AGENTS.md`) — nejsou naše, ale commitnuté.
-- Git vyžadoval `git config --global --add safe.directory D:/_WORK/_VMALBY`.
+## Co je hotové z původní práce
+Task 1 starého plánu, commity `76a7444` a `107df97`:
+- Next.js **16.2.10** (ne 15), React 19.2.4, TypeScript, App Router, src-dir, alias `@/*`,
+  bez Tailwindu, npm, Turbopack.
+- `src/app/tokens.css` — design tokeny dle nástěnky (světlý + dark režim).
+- `src/app/globals.css` — reset, body na tokenech. `src/app/layout.tsx` — lang="cs", metadata V Malby.
+- `src/app/page.tsx` je zatím placeholder (přestaví Task 10 nového plánu).
 
-## Task 2 — jak pokračovat (přesná strategie)
-Kódová část je automatizovatelná BEZ přihlášení do Sanity (placeholder env), reálné
-Sanity projectId doplní uživatel později:
-1. `npm install sanity next-sanity @sanity/image-url @sanity/webhook`
-   (pozor na peer-deps s next@16 — neřešit --force bez nahlášení)
-2. `sanity/schemaTypes/index.ts` — prázdný registr (`export const schemaTypes: never[] = []`)
-3. `sanity/structure.ts` — restriktivní desk structure (Realizace / Články / Texty stránek,
-   siteTexts jako singleton s pevným documentId) — přesný kód je v plánu, Task 2 Step 4
-4. `sanity.config.ts` v rootu — čte NEXT_PUBLIC_SANITY_PROJECT_ID/DATASET z env, basePath /studio
-5. `.env.local` s placeholdery (projectId=placeholder) + `.env.local.example` commitnutý;
-   ověřit, že `!.env.example` negace chytí i `.env.local.example`, jinak přidat
-6. `src/app/studio/[[...tool]]/page.tsx` — NextStudio mount, `dynamic = 'force-static'`
-7. Ověření jen `npm run build` (runtime Studio bez reálného projectId nejde)
-8. Commit "feat: embed Sanity Studio with restricted content-only navigation"
+## Co uživatel musí udělat (odblokuje Task 1 a Task 11)
+- **Postgres pro vývoj.** Buď Docker (`docker run --name vmalby-pg -e POSTGRES_USER=vmalby
+  -e POSTGRES_PASSWORD=vmalby -e POSTGRES_DB=vmalby -p 5432:5432 -d postgres:16`), nebo lokální
+  instalace — a odpovídající `DATABASE_URL` v `.env.local`.
+- **Parametry hostingu** (Task 11): má hosting Node.js runtime? Je tam PostgreSQL? Jak se nahrává
+  (git/FTP/SSH)? Je persistentní disk pro `public/uploads/`?
 
-**Uživatel musí (kdykoli, odblokuje runtime ověření Studia a Tasky 10–11):**
-- spustit `npx sanity@latest init` (interaktivní login) → projekt "V Malby", dataset `production`,
-  NEZAPISOVAT config soubory do složky (řekni ne) → opsat Project ID do `.env.local`
-- vygenerovat `SANITY_REVALIDATE_SECRET` (openssl rand -hex 32) do `.env.local`
+## Zjištění o Next 16, která plán zohledňuje
+- `middleware.ts` je **deprecated a přejmenovaný na `proxy.ts`**; soubor exportuje funkci `proxy`.
+  **Proxy běží defaultně v Node.js runtime**, takže `node:crypto` v něm funguje a `runtime` config
+  v něm vyhodí chybu.
+- `dynamic = 'force-static'` je pořád platné — odstraněné je jen při zapnutém Cache Components,
+  které tenhle projekt nepoužívá.
+- `params` v dynamických routách je `Promise` — vždy `await params`.
+- Soubor s `'use server'` smí exportovat jen async funkce; typy proto žijí v `src/lib/forms.ts`.
 
-## Tasky 3–9 — poznámky
-- Kompletní kód všech kroků je v plánu — subagentům předávat plný text úkolu, ne odkaz na soubor.
-- Tasky 3–5 (schémata), 6–7 (TDD s mockovaným klientem), 8–9 (stránky) jsou plně
-  automatizovatelné s placeholder env; ověření přes `npm test` / `npm run build`.
-- Plán psán pro Next 15; nainstalován Next 16 — detail page v Tasku 9 už používá
-  `params: Promise<{slug}>` (správně pro 15+ i 16). Kdyby next-sanity mělo problém
-  s next@16 peer-deps, nahlásit místo tichého --legacy-peer-deps.
-- Quality review Task 1 poznamenal do budoucna: `--oxide-soft` v dark módu je tmavší
-  než `--oxide` (jen dekorativní použití), `a {text-decoration:none}` řešit v komponentách,
-  `metadataBase` přidat až bude doména (Task 8+).
-
-## Kontext rozhodnutí (z brainstormingu)
-- Jen web, ne celá identita; jen čeština; teplý/řemeslný vizuál (blíž Lupoi, ne Penta).
-- Admin (Sanity Studio na /studio) je omezený jen na obsah: Realizace, Články, Texty stránek.
-  Otec uživatele edituje obsah, design je mimo jeho dosah.
-- Publish → webhook `/api/revalidate` (ověřený podpis) → revalidatePath → změna živě do vteřin.
-- Fotky zatím placeholdery, reálné se doplní později (fáze 7 design docu).
-- Tento plán = fáze 1–2 design docu + tenký vertikální řez; fáze 3–8 budou další plány.
+## Mrtvá větev: proč Sanity build padal (kdyby se k tomu někdo vracel)
+`sanity` importuje `useSWR` jako default z `swr`. Pod exportní podmínkou `react-server` má swr 2.5.1
+build bez default exportu, takže Turbopack build spadl na „Export default doesn't exist in target
+module". Příčina: `sanity.config.ts` bez `'use client'` vtáhl celý graf `sanity` do RSC vrstvy.
+Oprava byla `'use client'` na první řádek `sanity.config.ts` (oficiální Sanity dokumentace to
+vyžaduje, plán to vynechal). Ověřeno — build i `/studio` (HTTP 200) pak fungovaly.

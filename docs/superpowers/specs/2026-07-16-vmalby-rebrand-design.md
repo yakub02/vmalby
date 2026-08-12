@@ -1,6 +1,9 @@
 # V Malby — rebrand webu vmalby.cz — design doc
 
 Datum: 2026-07-16
+Aktualizováno: 2026-08-12 — bod 6 (technická architektura) přepsán: **místo Sanity (headless CMS)
+se staví vlastní redakční systém uvnitř téže Next.js aplikace.** Body 1–5 (cíl, IA, content model,
+vizuální směr) platí beze změny — mění se jen to, čím se obsah spravuje a kde leží.
 Stav: schváleno (viz rozhodnutí níže), čeká na implementační plán
 
 ## 1. Kontext a cíl
@@ -81,29 +84,51 @@ Shrnutí:
 - Vyhýbáme se: gradientovým hero pozadím, Inter/Space Grotesk jako výchozí volbě bez rozmyslu,
   emoji jako odrážkám, "vše na střed", kartám s barevným proužkem nahoře.
 
-## 6. Technická architektura
+## 6. Technická architektura — self-hosted redakční systém
 
-**Zvolený stack:** Next.js (frontend) + Sanity (headless CMS pro administraci), nasazení na
-Vercelu.
+**Zvolený stack:** jedna Next.js aplikace (App Router) + PostgreSQL přes Prisma. Žádný samostatný
+CMS proces, žádná cloudová CMS služba. Nasazení na existující webhosting firmy (Node hosting).
 
-- Otec publikuje obsah v Sanity Studiu — jednoduché formulářové UI, jeho přístup je omezený jen
-  na kolekce Realizace / Články / Texty stránek (bez přístupu ke schématu/nastavení).
-- Publikace spouští webhook → ISR revalidace příslušné stránky na Next.js frontendu → změna je
-  na živém webu do pár vteřin, bez ručního redeploye.
-- Sanity hostuje obsah, média a CDN s automatickým resize/crop fotek — ani otec, ani my
-  nespravujeme vlastní server/databázi pro obsah.
-- Frontend je 100% custom kód (Next.js + vlastní CSS/Tailwind), žádná šablona — vizuální směr
-  z bodu 5 se implementuje napřímo, ne přes témata/pluginy.
+**Architektura:** veřejné stránky (Domů, Ateliér, Realizace, Služby, Aktuality, Kontakt) čtou obsah
+přímo z vlastní databáze přes server components. Redakční část (`/sprava`) je součástí té samé
+aplikace, chráněná přihlášením.
 
-**Zvážená alternativa:** Payload CMS (self-hosted, vlastní data bez závislosti na třetí straně).
-Zamítnuto pro tento projekt — znamenalo by to spravovat vlastní server a databázi navíc, což je
-pro rodinnou firmu zbytečná provozní zátěž. Lze k tomu vrátit později, pokud se ukáže potřeba
-vlastnit data mimo Sanity.
+- **Databáze:** PostgreSQL + Prisma (typované modely, migrace). Postgres zvolen místo SQLite kvůli
+  přenositelnosti — SQLite má problém na běžném shared/serverless hostingu.
+- **Obsahové modely** (stejné tři jako v bodu 4, teď jako Prisma tabulky): `Realizace` (název,
+  lokalita, rok, kategorie, popis, galerie fotek, příznak „vybraná"), `Clanek` (nadpis, perex,
+  titulní foto, datum, obsah), `SiteTexts` (jeden řádek — hero texty, O nás, kontakt, popisy služeb;
+  strukturovaná pole, ne jedno volné textové pole, aby nešlo omylem rozbít vzhled).
+- **Přihlášení:** jedno sdílené heslo (`ADMIN_PASSWORD` v env). Po zadání se nastaví podepsané
+  session cookie (httpOnly), `middleware.ts` chrání celou větev `/sprava`.
+- **Rozsah administrace:** seznam Realizací a Článků s tlačítky Přidat / Upravit / Smazat a jeden
+  formulář pro Texty stránek. Žádný přístup ke schématu ani vzhledu, jen k obsahovým polím —
+  stejné omezení, jaké mělo mít Sanity Studio.
+- **Publikování bez webhooků:** admin i web běží ve stejné aplikaci, takže uložení formuláře
+  (server action) rovnou zavolá `revalidatePath()` na dotčené stránky. Jednodušší než webhook
+  s ověřeným podpisem, stejný efekt — změna na webu za pár vteřin.
+- **Rich text:** lehký editor (Tiptap) omezený jen na odstavce / tučné / vložení fotky. Žádné volné
+  HTML pole; obsah se před uložením sanitizuje na serveru.
+- **Fotky:** ukládají se na disk aplikace (`public/uploads/`) s automatickým resizem přes `sharp`.
+  Funguje na klasickém Node hostingu. Pokud by se aplikace nakonec nasazovala na serverless
+  platformu (Vercel apod.), bude nutné přehodit na objektové úložiště — řeší se až u deploye.
+- **Testování:** Vitest na server actions (create/update/delete pro každý typ obsahu) a na
+  revalidační logiku.
+- Frontend je 100% custom kód (Next.js + vlastní CSS), žádná šablona — vizuální směr z bodu 5 se
+  implementuje napřímo, ne přes témata/pluginy.
+
+**Zvážené alternativy:**
+- **Sanity (headless CMS)** — původní volba tohoto dokumentu, zamítnuta: zbytečná komplexita se
+  schématy jako kódem a závislost na externí službě pro tři jednoduché typy obsahu. Obsah má ležet
+  ve vlastní databázi na vlastním hostingu.
+- **Payload CMS (self-hosted framework)** — ušetřil by psaní auth/CRUD/editoru, ale pořád je to
+  forma schématu v kódu a další závislost k naučení. Pro tři typy obsahu je vlastní minimální admin
+  přímočařejší.
 
 ## 7. Fáze rebrandu (roadmap)
 
-1. Nastavení projektu — Next.js + Sanity kostra, git repo, deploy pipeline na Vercel
-2. Content model — kolekce Realizace/Články/Texty stránek v Sanity dle bodu 4
+1. Nastavení projektu — Next.js kostra, Postgres + Prisma, git repo
+2. Content model — tabulky Realizace/Články/Texty stránek dle bodu 4 + redakční část `/sprava`
 3. Design systém — komponenty (hero, karta realizace, článek, nav, footer) dle bodu 5
 4. Stránky — Domů, Ateliér, Realizace (list+detail), Služby, Aktuality, Kontakt, s placeholder fotkami
 5. Onboarding administrace — zaškolení otce (přidání realizace/článku)
