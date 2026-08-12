@@ -326,8 +326,8 @@ git commit -m "test: add Vitest harness and slugify helper"
 ## Task 3: Přihlášení — podepsané session cookie a ochrana /sprava
 
 **Files:**
-- Create: `src/lib/forms.ts`, `src/lib/session.ts`, `src/lib/session.test.ts`, `src/lib/auth.ts`, `proxy.ts`
-- Create: `src/app/prihlaseni/page.tsx`, `src/app/prihlaseni/prihlaseni.css`
+- Create: `src/lib/forms.ts`, `src/lib/session.ts`, `src/lib/session.test.ts`, `src/lib/auth.ts`, `src/proxy.ts`
+- Create: `src/app/prihlaseni/page.tsx`, `src/app/prihlaseni/prihlaseni.css`, `src/components/PrihlaseniForm.tsx`
 
 **Interfaces:**
 - Consumes: nic z předchozích tasků.
@@ -338,7 +338,7 @@ git commit -m "test: add Vitest harness and slugify helper"
   - server actions `prihlasit(prevState: FormState, formData: FormData): Promise<FormState>` a `odhlasit(): Promise<void>` z `@/lib/auth`
   - typ `FormState = { chyba?: string; ok?: boolean }` z `@/lib/forms` — sdílí ho všechny formuláře v Tascích 3, 5, 6 a 9
 
-- [ ] **Step 1: Napiš padající testy podpisu**
+- [x] **Step 1: Napiš padající testy podpisu**
 
 Podpis musí být HMAC (ne jen hash), jinak by si kdokoli vyrobil platné cookie. Vytvoř `src/lib/session.test.ts`:
 
@@ -385,12 +385,12 @@ describe('session cookie', () => {
 })
 ```
 
-- [ ] **Step 2: Spusť testy, ať vidíš, že padají**
+- [x] **Step 2: Spusť testy, ať vidíš, že padají**
 
 Run: `npx vitest run src/lib/session.test.ts`
 Expected: FAIL — `Failed to resolve import "@/lib/session"`.
 
-- [ ] **Step 3: Implementace podpisu**
+- [x] **Step 3: Implementace podpisu**
 
 Vytvoř `src/lib/session.ts`. `timingSafeEqual` se používá proto, aby porovnání podpisu neprozradilo správnou hodnotu po znacích:
 
@@ -429,18 +429,18 @@ export function verifySession(
 }
 ```
 
-- [ ] **Step 4: Spusť testy**
+- [x] **Step 4: Spusť testy**
 
 Run: `npx vitest run`
 Expected: PASS (slug + session).
 
-- [ ] **Step 5: Přečti si dokumentaci k proxy a cookies**
+- [x] **Step 5: Přečti si dokumentaci k proxy a cookies**
 
 Read: `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/proxy.md` (sekce Exports, Matcher, Runtime) a `node_modules/next/dist/docs/01-app/03-api-reference/04-functions/cookies.md`.
 
-- [ ] **Step 6: Ochrana /sprava**
+- [x] **Step 6: Ochrana /sprava**
 
-Vytvoř `proxy.ts` v rootu repa (ne v `src/`, protože `app/` je v `src/` — soubor patří na stejnou úroveň jako `app`; pokud build hlásí, že proxy nenašel, přesuň na `src/proxy.ts`):
+Vytvoř **`src/proxy.ts`** — soubor musí ležet na stejné úrovni jako `app/`, a protože tenhle projekt používá `src/app`, patří proxy do `src/`, ne do rootu. **Ověřeno:** v rootu se tiše ignoruje, build projde zelený a `/sprava` zůstane nechráněná. Kontrola je ve výpisu `npm run build` — musí tam být řádek `ƒ Proxy (Middleware)`.
 
 ```ts
 import { NextResponse } from 'next/server'
@@ -468,7 +468,7 @@ export const config = {
 }
 ```
 
-- [ ] **Step 7: Sdílený typ stavu formuláře**
+- [x] **Step 7: Sdílený typ stavu formuláře**
 
 Vytvoř `src/lib/forms.ts` (samostatný modul, protože soubor s `'use server'` smí exportovat jen async funkce):
 
@@ -476,7 +476,7 @@ Vytvoř `src/lib/forms.ts` (samostatný modul, protože soubor s `'use server'` 
 export type FormState = { chyba?: string; ok?: boolean }
 ```
 
-- [ ] **Step 8: Server actions pro přihlášení a odhlášení**
+- [x] **Step 8: Server actions pro přihlášení a odhlášení**
 
 Vytvoř `src/lib/auth.ts`. Heslo se porovnává `timingSafeEqual` nad hashem, aby délka hesla neunikala a porovnání bylo konstantní:
 
@@ -534,7 +534,7 @@ export async function odhlasit(): Promise<void> {
 
 Pozn.: `redirect()` uvnitř server action vyhazuje speciální výjimku — nesmí být v `try/catch`, který by ji spolkl.
 
-- [ ] **Step 9: Přihlašovací stránka**
+- [x] **Step 9: Přihlašovací stránka**
 
 Vytvoř `src/app/prihlaseni/page.tsx`:
 
@@ -640,7 +640,7 @@ Vytvoř `src/app/prihlaseni/prihlaseni.css`:
 }
 ```
 
-`useSearchParams` v klientské komponentě vyžaduje Suspense hranici při prerenderu — pokud build zahlásí `useSearchParams() should be wrapped in a suspense boundary`, obal obsah do `<Suspense>` v `src/app/prihlaseni/layout.tsx` a **nahlas to** v poznámkách k tasku.
+**Rozdělení na dva soubory je záměrné:** `useSearchParams` vyžaduje Suspense hranici při prerenderu, takže formulář je klientská komponenta `src/components/PrihlaseniForm.tsx` a stránka je serverová obálka, která ji zabalí do `<Suspense>` a nastaví `robots: 'noindex'`.
 
 - [ ] **Step 10: Ověření**
 

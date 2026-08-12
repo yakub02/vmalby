@@ -25,9 +25,9 @@ Co to znamenalo:
 ## Stav tasků nového plánu
 | # | Úkol | Stav |
 |---|------|------|
-| 1 | Prisma, databáze a obsahové modely | čeká — **blokuje ho běžící Postgres** |
-| 2 | Vitest a testovací kostra | čeká |
-| 3 | Přihlášení, podepsané session cookie, ochrana /sprava | čeká |
+| 1 | Prisma, databáze a obsahové modely | ⚠️ ČÁSTEČNĚ (commit `2f61e01`) — schéma, `prisma.config.ts`, klient s adapterem a `prisma generate` hotové; **chybí migrace, blokuje ji přístup k databázi** |
+| 2 | Vitest a testovací kostra | ✅ HOTOVO (commit `2f61e01`) — `slugify` + 4 testy |
+| 3 | Přihlášení, podepsané session cookie, ochrana /sprava | ✅ HOTOVO — 6 testů podpisu, ochrana ověřená za běhu (307 na `/prihlaseni`) |
 | 4 | Čtecí vrstva obsahu | čeká |
 | 5 | Server actions Realizace + revalidace | čeká |
 | 6 | Server actions Články a Texty stránek | čeká |
@@ -46,9 +46,15 @@ Task 1 starého plánu, commity `76a7444` a `107df97`:
 - `src/app/page.tsx` je zatím placeholder (přestaví Task 10 nového plánu).
 
 ## Co uživatel musí udělat (odblokuje Task 1 a Task 11)
-- **Postgres pro vývoj.** Buď Docker (`docker run --name vmalby-pg -e POSTGRES_USER=vmalby
-  -e POSTGRES_PASSWORD=vmalby -e POSTGRES_DB=vmalby -p 5432:5432 -d postgres:16`), nebo lokální
-  instalace — a odpovídající `DATABASE_URL` v `.env.local`.
+- **Přístup k Postgresu pro vývoj.** Na portu 5432 už něco poslouchá — vypadá to na lokálně
+  nainstalovaný Postgres, ale přihlašovací údaje k němu neznáme a `psql` na stroji není.
+  Buď dodej správné `DATABASE_URL` do `.env.local`, nebo spusť čistou instanci v Dockeru
+  (Docker Desktop teď neběží): `docker run --name vmalby-pg -e POSTGRES_USER=vmalby
+  -e POSTGRES_PASSWORD=vmalby -e POSTGRES_DB=vmalby -p 5433:5432 -d postgres:16`
+  (port 5433, aby nekolidoval se stávající instancí — pak i v `DATABASE_URL` uveď 5433).
+  Pak stačí `npx prisma migrate dev --name init`.
+- **Silné `ADMIN_PASSWORD` a `SESSION_SECRET`** v `.env.local` (teď tam jsou vývojové
+  placeholdery). `SESSION_SECRET` vygeneruj `openssl rand -hex 32`.
 - **Parametry hostingu** (Task 11): má hosting Node.js runtime? Je tam PostgreSQL? Jak se nahrává
   (git/FTP/SSH)? Je persistentní disk pro `public/uploads/`?
 
@@ -60,6 +66,13 @@ Task 1 starého plánu, commity `76a7444` a `107df97`:
   které tenhle projekt nepoužívá.
 - `params` v dynamických routách je `Promise` — vždy `await params`.
 - Soubor s `'use server'` smí exportovat jen async funkce; typy proto žijí v `src/lib/forms.ts`.
+- **`proxy.ts` musí být v `src/`, ne v rootu** (protože `app/` je v `src/`). V rootu se tiše
+  ignoruje — build je zelený a `/sprava` zůstane nechráněná. Kontrola: výpis `npm run build`
+  musí obsahovat řádek `ƒ Proxy (Middleware)`.
+- Prisma 7: `url` v `datasource` neexistuje (patří do `prisma.config.ts`), klient vyžaduje
+  driver adapter `@prisma/adapter-pg`, a Prisma nečte `.env.local` — načítá se
+  `process.loadEnvFile('.env.local')` v configu.
+- Vitest config pojmenuj `vitest.config.mts`, jinak Vite hlásí varování o ESM v CJS.
 
 ## Mrtvá větev: proč Sanity build padal (kdyby se k tomu někdo vracel)
 `sanity` importuje `useSWR` jako default z `swr`. Pod exportní podmínkou `react-server` má swr 2.5.1

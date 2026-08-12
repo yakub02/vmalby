@@ -1,0 +1,55 @@
+.prihlaseni {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+
+.prihlaseni__form {
+  width: min(24rem, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+}
+
+.prihlaseni__nadpis {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem;
+}
+
+.prihlaseni__label {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+
+.prihlaseni__input {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--line);
+  background: var(--ground);
+  color: var(--ink);
+  font: inherit;
+}
+
+.prihlaseni__chyba {
+  margin: 0;
+  color: var(--oxide);
+  font-size: 0.875rem;
+}
+
+.prihlaseni__tlacitko {
+  padding: 0.625rem 1rem;
+  border: none;
+  background: var(--oxide);
+  color: var(--ground);
+  font: inherit;
+  cursor: pointer;
+}
+
+.prihlaseni__tlacitko:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
