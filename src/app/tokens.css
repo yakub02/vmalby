@@ -1,3 +1,5 @@
+/* Paleta vychází z materiálů, které firma sama zpracovává — vápno, uhel, oxidový
+   pigment, měděnka, kámen, sádra. Viz schválená vizuální nástěnka. */
 :root {
   --ground: #E7E1D3;
   --ground-2: #DED6C4;
@@ -8,6 +10,9 @@
   --verdigris: #5C6B5D;
   --line: #C7BCA6;
   --card-bg: #F1ECE0;
+  --surface: #EFE9DC;
+  --shadow: 0 1px 0 rgba(33, 29, 24, 0.06);
+  --radius: 3px;
   --serif: "Iowan Old Style", "Sitka Text", "Palatino Linotype", Georgia, serif;
   --sans: "Neue Haas Grotesk Text Pro", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
 }
@@ -23,5 +28,7 @@
     --verdigris: #8CA491;
     --line: #4A4238;
     --card-bg: #2A251E;
+    --surface: #251F19;
+    --shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
   }
 }

@@ -1,0 +1,456 @@
+/* Vizuální jazyk podle schválené nástěnky: serif nadpisy, klidný grotesque text,
+   asymetrický rytmus sekcí, barvy odvozené z materiálů. Žádné gradientové hero
+   pozadí, žádné vše na střed, žádné ikonky místo fotek. */
+
+.wrap {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding-inline: clamp(1.25rem, 4vw, 1.75rem);
+}
+
+/* ---------- hlavička ---------- */
+
+.hlavicka {
+  border-bottom: 1px solid var(--line);
+}
+
+.hlavicka__vnitrek {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding-block: 1.25rem;
+}
+
+.znacka {
+  font-family: var(--serif);
+  font-size: 1.375rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.navigace {
+  display: flex;
+  gap: clamp(1rem, 3vw, 2rem);
+  flex-wrap: wrap;
+}
+
+.navigace a {
+  font-size: 0.8125rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid transparent;
+  transition: color 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.navigace a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--oxide);
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  position: relative;
+  min-height: min(80vh, 40rem);
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  /* Textura zastupuje fotografii, dokud nejsou nafocené realizace. */
+  background:
+    repeating-linear-gradient(115deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 6px),
+    linear-gradient(180deg, rgba(33, 29, 24, 0) 0%, rgba(33, 29, 24, 0.62) 100%),
+    linear-gradient(135deg, var(--ground-2), var(--card-bg));
+}
+
+.hero__stitek {
+  position: absolute;
+  top: clamp(1rem, 3vw, 1.5rem);
+  left: clamp(1.5rem, 5vw, 3.5rem);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(237, 230, 214, 0.75);
+  background: rgba(33, 29, 24, 0.35);
+  padding: 0.3125rem 0.5625rem;
+  border-radius: 2px;
+}
+
+.hero__nadpis {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(2.25rem, 6vw, 4.25rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: #ede6d6;
+  margin: 0 0 0.75rem;
+  max-width: 18ch;
+  text-wrap: balance;
+}
+
+.hero__podnadpis {
+  color: rgba(237, 230, 214, 0.82);
+  font-size: clamp(0.9375rem, 1.6vw, 1.0625rem);
+  margin: 0;
+  max-width: 44ch;
+}
+
+/* ---------- rytmus sekcí ---------- */
+
+.sekce {
+  padding-block: clamp(3rem, 7vw, 4.5rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.sekce:last-of-type {
+  border-bottom: none;
+}
+
+.sekce__hlava {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(1.75rem, 4vw, 2.375rem);
+}
+
+.nadtitulek {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--oxide);
+  font-weight: 600;
+  margin: 0;
+}
+
+.sekce__nadpis {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 3.4vw, 2.375rem);
+  margin: 0.375rem 0 0;
+  text-wrap: balance;
+}
+
+.sekce__poznamka {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  max-width: 34ch;
+  text-align: right;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ---------- pruh s fakty ---------- */
+
+.fakta {
+  display: flex;
+  gap: clamp(1.25rem, 4vw, 2.5rem);
+  flex-wrap: wrap;
+  padding-block: clamp(1.5rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+
+.fakta b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ---------- karty realizací ---------- */
+
+.mrizka {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: clamp(1.25rem, 3vw, 1.625rem);
+}
+
+.karta {
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+}
+
+.karta__odkaz {
+  display: block;
+}
+
+.karta__foto {
+  position: relative;
+}
+
+.karta__kategorie {
+  position: absolute;
+  bottom: 0.625rem;
+  left: 0.625rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--ground);
+  padding: 0.25rem 0.5rem;
+}
+
+.karta__telo {
+  padding: 1rem 1rem 1.25rem;
+}
+
+.karta__nazev {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.1875rem;
+  margin: 0 0 0.375rem;
+  transition: color 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.karta__odkaz:hover .karta__nazev {
+  color: var(--oxide);
+}
+
+.karta__meta {
+  font-size: 0.78125rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+/* ---------- zástupná fotoplocha ---------- */
+
+.foto {
+  position: relative;
+  background:
+    repeating-linear-gradient(70deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 7px),
+    linear-gradient(160deg, var(--ground-2), var(--surface));
+}
+
+.foto__stitek {
+  position: absolute;
+  bottom: 0.625rem;
+  right: 0.625rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---------- výpis realizací ---------- */
+
+.filtr {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+}
+
+.filtr a {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  color: var(--ink-soft);
+  transition: background 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.filtr a:hover {
+  border-color: var(--oxide);
+  color: var(--ink);
+}
+
+.filtr a[aria-current='true'] {
+  background: var(--oxide);
+  border-color: var(--oxide);
+  color: var(--card-bg);
+}
+
+/* ---------- detail realizace ---------- */
+
+.detail {
+  padding-block: clamp(2.5rem, 6vw, 4rem);
+}
+
+.detail__nadpis {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0.5rem 0 0;
+  max-width: 20ch;
+  text-wrap: balance;
+}
+
+.detail__popis {
+  max-width: 60ch;
+  margin-top: clamp(1.5rem, 3vw, 2rem);
+  color: var(--ink-soft);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+.detail__popis p {
+  margin: 0 0 1rem;
+}
+
+.detail__popis strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.detail__galerie {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 0.75rem;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+/* První fotka nese hlavní pohled, ostatní jsou doplňkové —
+   pravidelná mřížka stejných dlaždic by dělala z realizace katalog. */
+.detail__galerie > :first-child {
+  grid-column: 1 / -1;
+}
+
+.zpet {
+  display: inline-block;
+  margin-top: clamp(2rem, 4vw, 3rem);
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  color: var(--oxide);
+}
+
+.zpet:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+/* ---------- výzva ke kontaktu ---------- */
+
+.vyzva__nadpis {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.1;
+  margin: 0.5rem 0 1rem;
+  max-width: 22ch;
+  text-wrap: balance;
+}
+
+.vyzva__kontakt {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-family: var(--serif);
+  color: var(--oxide);
+}
+
+.vyzva__kontakt:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.vyzva__radek {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+  margin: 0.75rem 0 0;
+}
+
+/* ---------- text sekce O nás ---------- */
+
+.text-blok {
+  max-width: 58ch;
+  color: var(--ink-soft);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ---------- seznam aktualit ---------- */
+
+.aktuality {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.aktuality li {
+  padding-block: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.aktuality li:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.aktuality__datum {
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--oxide);
+  font-weight: 600;
+}
+
+.aktuality__nadpis {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.375rem;
+  margin: 0.375rem 0 0.375rem;
+  max-width: 32ch;
+}
+
+.aktuality__perex {
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 56ch;
+}
+
+/* ---------- patička ---------- */
+
+.paticka {
+  border-top: 1px solid var(--line);
+  padding-block: clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.paticka__vnitrek {
+  display: flex;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.znacka--paticka {
+  margin: 0 0 0.5rem;
+}
+
+.paticka__radek {
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+  margin: 0 0 0.25rem;
+}
+
+.paticka__kontakt a:hover,
+.paticka__copy a:hover {
+  color: var(--oxide);
+}
+
+.paticka__copy {
+  width: 100%;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 40rem) {
+  .sekce__poznamka {
+    text-align: left;
+    max-width: none;
+  }
+}

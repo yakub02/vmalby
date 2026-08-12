@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './tokens.css'
 import './globals.css'
+import './stranky.css'
 
 export const metadata: Metadata = {
   title: 'V Malby — malířské a řemeslné práce od 1992',
