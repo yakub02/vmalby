@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Kategorie {
+  MALBA
+  STUK
+  BETON
+  KOVY
+  TAPETY
+}
+
+model Realizace {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  nazev     String
+  lokalita  String
+  rok       Int
+  kategorie Kategorie
+  popis     String    @default("")
+  fotky     Fotka[]
+  vybrana   Boolean   @default(false)
+  poradi    Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([vybrana])
+  @@index([kategorie])
+}
+
+model Fotka {
+  id          String    @id @default(cuid())
+  url         String
+  popisek     String    @default("")
+  poradi      Int       @default(0)
+  realizace   Realizace @relation(fields: [realizaceId], references: [id], onDelete: Cascade)
+  realizaceId String
+
+  @@index([realizaceId])
+}
+
+model Clanek {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  nadpis      String
+  perex       String   @default("")
+  titulniFoto String?
+  datum       DateTime @default(now())
+  obsah       String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([datum])
+}
+
+model SiteTexts {
+  id             String   @id @default("singleton")
+  heroNadpis     String   @default("")
+  heroPodnadpis  String   @default("")
+  oNasNadpis     String   @default("")
+  oNasText       String   @default("")
+  oNasFoto       String?
+  sluzbyMalba    String   @default("")
+  sluzbyStuk     String   @default("")
+  sluzbyBeton    String   @default("")
+  sluzbyKovy     String   @default("")
+  sluzbyTapety   String   @default("")
+  kontaktEmail   String   @default("")
+  kontaktTelefon String   @default("")
+  kontaktAdresa  String   @default("")
+  updatedAt      DateTime @updatedAt
+}

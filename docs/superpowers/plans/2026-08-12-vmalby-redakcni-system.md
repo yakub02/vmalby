@@ -20,28 +20,31 @@
 - Commit po každém tasku, do lokálního gitu. Nic se nepushuje bez souhlasu uživatele.
 - Testy: `npx vitest run`. Task je hotový, až testy projdou a `npm run build` je zelený.
 - **Soubor s `'use server'` smí exportovat jen async funkce.** Typy a konstanty proto patří do běžných modulů (`src/lib/forms.ts`, `src/lib/revalidace.ts`), ne do souborů se server actions.
+- **Prisma je verze 7 a chová se jinak než starší návody.** `url` v `datasource` bloku už neexistuje — připojení se konfiguruje v `prisma.config.ts`. Prisma 7 nemá Rust engine, takže `PrismaClient` vyžaduje driver adapter (`@prisma/adapter-pg`). Prisma navíc čte jen `.env`, ne `.env.local`.
 
 ---
 
 ## Task 1: Prisma, databáze a obsahové modely
 
 **Files:**
-- Create: `prisma/schema.prisma`, `src/lib/db.ts`
+- Create: `prisma/schema.prisma`, `prisma.config.ts`, `src/lib/db.ts`
 - Modify: `package.json` (skripty), `.env.local.example`, `.gitignore`
 
 **Interfaces:**
 - Produces: `prisma` (singleton `PrismaClient` z `@/lib/db`), modely `Realizace`, `Clanek`, `SiteTexts`, enum `Kategorie`.
 
-- [ ] **Step 1: Instalace Prismy**
+- [x] **Step 1: Instalace Prismy**
 
 ```bash
-npm install @prisma/client
-npm install -D prisma
+npm install @prisma/client @prisma/adapter-pg pg
+npm install -D prisma @types/pg
 ```
 
-- [ ] **Step 2: Schéma**
+`@prisma/adapter-pg` a `pg` jsou v Prisma 7 povinné — bez Rust enginu si klient sám spojení neotevře.
 
-Vytvoř `prisma/schema.prisma`:
+- [x] **Step 2: Schéma**
+
+Vytvoř `prisma/schema.prisma` (bez `url` — ta patří do `prisma.config.ts`):
 
 ```prisma
 generator client {
@@ -50,7 +53,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum Kategorie {
@@ -125,23 +127,59 @@ model SiteTexts {
 
 `SiteTexts` má pevné `id = "singleton"` — je to jeden řádek, admin ho nikdy nezakládá ani nemaže, jen edituje.
 
-- [ ] **Step 3: Prisma klient jako singleton**
+- [x] **Step 3: Konfigurace připojení**
+
+Vytvoř `prisma.config.ts` v rootu repa. Prisma sama čte jen `.env`, kdežto Next drží lokální hodnoty v `.env.local` — bez explicitního načtení by `prisma migrate` neznalo `DATABASE_URL`:
+
+```ts
+import { defineConfig, env } from 'prisma/config'
+
+try {
+  process.loadEnvFile('.env.local')
+} catch {
+  // .env.local není — počítá se s proměnnými z prostředí
+}
+
+export default defineConfig({
+  schema: 'prisma/schema.prisma',
+  datasource: {
+    url: env('DATABASE_URL'),
+  },
+})
+```
+
+Ověř: `npx prisma validate` → „The schema at prisma\schema.prisma is valid 🚀"
+
+- [x] **Step 4: Prisma klient jako singleton**
 
 Vytvoř `src/lib/db.ts` (bez singletonu by dev server s hot reloadem otevíral nové spojení při každé změně a Postgres by došly connections):
 
 ```ts
 import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+function vytvorKlienta(): PrismaClient {
+  const connectionString = process.env.DATABASE_URL
+  if (!connectionString) {
+    throw new Error('Chybí DATABASE_URL — nastav ho v .env.local')
+  }
+
+  // Prisma 7 nemá Rust engine, spojení obstarává driver adapter.
+  return new PrismaClient({ adapter: new PrismaPg(connectionString) })
+}
+
+export const prisma = globalForPrisma.prisma ?? vytvorKlienta()
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma
 }
 ```
 
-- [ ] **Step 4: Skripty a ignore**
+Ověř: `npx prisma generate` → „Generated Prisma Client (v7…)"
+
+- [x] **Step 5: Skripty a ignore**
 
 Do `package.json` do `scripts` přidej:
 
@@ -159,7 +197,7 @@ Do `.gitignore` přidej na konec:
 !/public/uploads/.gitkeep
 ```
 
-- [ ] **Step 5: Lokální databáze a první migrace**
+- [ ] **Step 6: Lokální databáze a první migrace** ⬅ **TADY SE EXEKUCE ZASTAVILA**
 
 Potřebuješ běžící Postgres a `DATABASE_URL` v `.env.local`. Pokud máš Docker:
 
@@ -177,7 +215,7 @@ Expected: vznikne `prisma/migrations/<timestamp>_init/migration.sql` a vypíše 
 
 Pokud Postgres neběží, **zastav se a nahlas to** — nezakládej SQLite náhradu, přenositelnost na Postgres je zadání.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add -A
@@ -189,21 +227,21 @@ git commit -m "feat: add Prisma schema for Realizace, Clanek and SiteTexts"
 ## Task 2: Vitest a testovací kostra
 
 **Files:**
-- Create: `vitest.config.ts`, `src/lib/slug.ts`, `src/lib/slug.test.ts`
+- Create: `vitest.config.mts`, `src/lib/slug.ts`, `src/lib/slug.test.ts`
 - Modify: `package.json`
 
 **Interfaces:**
 - Produces: `slugify(text: string): string` — používají ho Tasky 5 a 6 pro generování `slug` z názvu/nadpisu.
 
-- [ ] **Step 1: Instalace**
+- [x] **Step 1: Instalace**
 
 ```bash
 npm install -D vitest
 ```
 
-- [ ] **Step 2: Konfigurace**
+- [x] **Step 2: Konfigurace**
 
-Vytvoř `vitest.config.ts`:
+Vytvoř `vitest.config.mts` — **přípona `.mts` je záměrná**, jako `.ts` ho Vite načítá jako CommonJS a hlásí varování o ESM syntaxi:
 
 ```ts
 import { defineConfig } from 'vitest/config'
@@ -222,7 +260,7 @@ export default defineConfig({
 
 Do `package.json` do `scripts` přidej `"test": "vitest run"`.
 
-- [ ] **Step 3: Napiš padající test**
+- [x] **Step 3: Napiš padající test**
 
 Vytvoř `src/lib/slug.test.ts`:
 
@@ -251,12 +289,12 @@ describe('slugify', () => {
 })
 ```
 
-- [ ] **Step 4: Spusť test, ať vidíš, že padá**
+- [x] **Step 4: Spusť test, ať vidíš, že padá**
 
 Run: `npx vitest run src/lib/slug.test.ts`
 Expected: FAIL — `Failed to resolve import "@/lib/slug"`.
 
-- [ ] **Step 5: Implementace**
+- [x] **Step 5: Implementace**
 
 Vytvoř `src/lib/slug.ts`:
 
@@ -271,12 +309,12 @@ export function slugify(text: string): string {
 }
 ```
 
-- [ ] **Step 6: Spusť testy**
+- [x] **Step 6: Spusť testy**
 
 Run: `npx vitest run`
 Expected: PASS, 4 testy.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add -A
