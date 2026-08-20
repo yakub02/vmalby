@@ -1,104 +1,89 @@
 import Link from 'next/link'
-import { RealizaceKarta } from '@/components/RealizaceKarta'
+import { FotoPlocha } from '@/components/FotoPlocha'
+import { Navigace } from '@/components/Navigace'
+import { RealizacePolozka } from '@/components/RealizacePolozka'
 import { UKAZKOVE_CLANKY, UKAZKOVE_REALIZACE, UKAZKOVE_TEXTY } from '@/lib/ukazkovyObsah'
 
 export default function DomuPage() {
-  const vybrane = UKAZKOVE_REALIZACE.filter((r) => r.vybrana).slice(0, 4)
-  const clanky = UKAZKOVE_CLANKY.slice(0, 2)
+  const vybrane = UKAZKOVE_REALIZACE.filter((r) => r.vybrana)
+  const clanek = UKAZKOVE_CLANKY[0]
 
   return (
     <main>
-      <section className="hero">
-        <span className="hero__stitek">Foto: doplní se</span>
-        <div>
-          <h1 className="hero__nadpis">{UKAZKOVE_TEXTY.heroNadpis}</h1>
-          <p className="hero__podnadpis">{UKAZKOVE_TEXTY.heroPodnadpis}</p>
+      <section className="uvod okraj">
+        <div className="uvod__plocha">
+          <FotoPlocha stitek="Foto: doplní se" />
+        </div>
+
+        <Navigace />
+
+        <div className="uvod__text">
+          <p className="popisek popisek--svetly">Praha — od roku 1992</p>
+          <h1 className="uvod__nadpis">{UKAZKOVE_TEXTY.heroNadpis}</h1>
+        </div>
+
+        <div className="uvod__pata">
+          <p className="popisek popisek--svetly">Malba a lakování</p>
+          <p className="popisek popisek--svetly">Benátský štuk</p>
+          <p className="popisek popisek--svetly">Designový beton</p>
+          <p className="popisek popisek--svetly">Imitace kovů</p>
+          <p className="popisek popisek--svetly">Tapetování</p>
         </div>
       </section>
 
-      <div className="wrap">
-        <div className="fakta">
-          <span>
-            <b>1992</b> — rok založení
-          </span>
-          <span>
-            <b>Praha</b> a okolí
-          </span>
-          <span>
-            <b>Best of Realty</b> — oceněný projekt
-          </span>
+      <section className="rada okraj">
+        {vybrane.map((realizace, i) => (
+          <RealizacePolozka key={realizace.id} realizace={realizace} poradi={i + 1} />
+        ))}
+        <p>
+          <Link className="odkaz" href="/realizace">
+            Všechny realizace
+          </Link>
+        </p>
+      </section>
+
+      <section className="blok okraj">
+        <p className="popisek">Ateliér</p>
+        <h2 className="blok__nadpis">{UKAZKOVE_TEXTY.oNasNadpis}</h2>
+        <p className="blok__text">{UKAZKOVE_TEXTY.oNasText}</p>
+        <div className="blok__rada">
+          <div>
+            <p className="popisek">Založeno</p>
+            <p className="paticka__hodnota">1992</p>
+          </div>
+          <div>
+            <p className="popisek">Ocenění</p>
+            <p className="paticka__hodnota">Best of Realty</p>
+          </div>
+          <div>
+            <p className="popisek">Spolupráce</p>
+            <p className="paticka__hodnota">Pavel Hayek</p>
+          </div>
         </div>
+      </section>
 
-        <section className="sekce">
-          <div className="sekce__hlava">
-            <div>
-              <span className="nadtitulek">Vybrané realizace</span>
-              <h2 className="sekce__nadpis">Práce, která se dá vidět zblízka</h2>
-            </div>
-            <p className="sekce__poznamka">
-              Každá realizace má vlastní stránku s popisem postupu a galerií.
-            </p>
-          </div>
-
-          <div className="mrizka">
-            {vybrane.map((realizace) => (
-              <RealizaceKarta key={realizace.id} realizace={realizace} />
-            ))}
-          </div>
-        </section>
-
-        <section className="sekce">
-          <div className="sekce__hlava">
-            <div>
-              <span className="nadtitulek">Ateliér</span>
-              <h2 className="sekce__nadpis">{UKAZKOVE_TEXTY.oNasNadpis}</h2>
-            </div>
-            <p className="sekce__poznamka">
-              <Link href="/atelier">Více o firmě a průběhu zakázky</Link>
-            </p>
-          </div>
-          <p className="text-blok">{UKAZKOVE_TEXTY.oNasText}</p>
-        </section>
-
-        <section className="sekce">
-          <div className="sekce__hlava">
-            <div>
-              <span className="nadtitulek">Aktuality</span>
-              <h2 className="sekce__nadpis">Z dílny</h2>
-            </div>
-            <p className="sekce__poznamka">
-              <Link href="/aktuality">Všechny články</Link>
-            </p>
-          </div>
-
-          <ul className="aktuality">
-            {clanky.map((clanek) => (
-              <li key={clanek.id}>
-                <span className="aktuality__datum">
-                  {clanek.datum.toLocaleDateString('cs-CZ', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
-                </span>
-                <h3 className="aktuality__nadpis">{clanek.nadpis}</h3>
-                <p className="aktuality__perex">{clanek.perex}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="sekce">
-          <span className="nadtitulek">Kontakt</span>
-          <h2 className="vyzva__nadpis">Máte projekt, který potřebuje pořádný povrch?</h2>
-          <a className="vyzva__kontakt" href={`mailto:${UKAZKOVE_TEXTY.kontaktEmail}`}>
-            {UKAZKOVE_TEXTY.kontaktEmail}
-          </a>
-          <p className="vyzva__radek">
-            {UKAZKOVE_TEXTY.kontaktTelefon} · {UKAZKOVE_TEXTY.kontaktAdresa}
+      {clanek && (
+        <section className="blok okraj">
+          <p className="popisek">Z dílny</p>
+          <h2 className="blok__nadpis">{clanek.nadpis}</h2>
+          <p className="blok__text">{clanek.perex}</p>
+          <p style={{ marginTop: '2rem' }}>
+            <Link className="odkaz" href="/aktuality">
+              Všechny články
+            </Link>
           </p>
         </section>
-      </div>
+      )}
+
+      <section className="blok okraj">
+        <p className="popisek">Kontakt</p>
+        <h2 className="blok__nadpis">Máte projekt, který potřebuje pořádný povrch?</h2>
+        <p style={{ marginTop: '2rem' }}>
+          <a className="odkaz odkaz--velky" href={`mailto:${UKAZKOVE_TEXTY.kontaktEmail}`}>
+            {UKAZKOVE_TEXTY.kontaktEmail}
+          </a>
+        </p>
+      </section>
     </main>
   )
 }

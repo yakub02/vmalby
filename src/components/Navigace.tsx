@@ -1,4 +1,7 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const ODKAZY = [
   ['/realizace', 'Realizace'],
@@ -8,21 +11,26 @@ const ODKAZY = [
   ['/kontakt', 'Kontakt'],
 ] as const
 
-export function Navigace() {
+/**
+ * `pevna` = navigace stojí v toku stránky na světlém podkladu, přilepená
+ * nahoru při scrollu (viz `.hlavicka--pevna`). Bez ní hlavička plave přes
+ * úvodní fotografii a přebarví se do světla.
+ */
+export function Navigace({ pevna = false }: { pevna?: boolean }) {
+  const cesta = usePathname()
+
   return (
-    <header className="hlavicka">
-      <div className="wrap hlavicka__vnitrek">
-        <Link href="/" className="znacka">
-          V&nbsp;Malby
-        </Link>
-        <nav className="navigace" aria-label="Hlavní navigace">
-          {ODKAZY.map(([href, popisek]) => (
-            <Link key={href} href={href}>
-              {popisek}
-            </Link>
-          ))}
-        </nav>
-      </div>
+    <header className={`hlavicka okraj${pevna ? ' hlavicka--pevna' : ''}`}>
+      <Link href="/" className="znacka">
+        V Malby
+      </Link>
+      <nav className="navigace" aria-label="Hlavní navigace">
+        {ODKAZY.map(([href, popisek]) => (
+          <Link key={href} href={href} aria-current={cesta.startsWith(href) ? 'true' : undefined}>
+            {popisek}
+          </Link>
+        ))}
+      </nav>
     </header>
   )
 }

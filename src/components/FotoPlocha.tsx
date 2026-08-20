@@ -1,17 +1,29 @@
+import Image from 'next/image'
+
 /**
- * Zástupná plocha za fotku realizace. Textura vychází z vizuální nástěnky —
- * záměrně to není ikonka ani prázdný obdélník, aby bylo na první pohled jasné,
- * že sem přijde skutečná fotografie (doplní se ve fázi 7).
+ * Fotografie realizace, nebo zástupná plocha, dokud fotka není nahraná.
+ * Rodič určuje poměr stran (aspect-ratio na .polozka__media / .galerie__snimek).
  */
 export function FotoPlocha({
+  src,
+  alt,
   stitek,
-  pomer = '4 / 3',
 }: {
+  src?: string
+  alt?: string
   stitek?: string
-  pomer?: string
 }) {
   return (
-    <div className="foto" style={{ aspectRatio: pomer }}>
+    <div className="foto">
+      {src && (
+        <Image
+          src={src}
+          alt={alt ?? ''}
+          fill
+          sizes="(max-width: 52rem) 100vw, 66vw"
+          className="foto__obrazek"
+        />
+      )}
       {stitek && <span className="foto__stitek">{stitek}</span>}
     </div>
   )

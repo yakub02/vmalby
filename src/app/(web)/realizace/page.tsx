@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Kategorie } from '@prisma/client'
-import { RealizaceKarta } from '@/components/RealizaceKarta'
+import { Navigace } from '@/components/Navigace'
+import { RealizacePolozka } from '@/components/RealizacePolozka'
 import { KATEGORIE_PORADI, NAZVY_KATEGORII } from '@/lib/kategorie'
 import { UKAZKOVE_REALIZACE } from '@/lib/ukazkovyObsah'
 
@@ -26,19 +27,15 @@ export default async function RealizacePage({
     : UKAZKOVE_REALIZACE
 
   return (
-    <main className="wrap">
-      <section className="sekce">
-        <div className="sekce__hlava">
-          <div>
-            <span className="nadtitulek">Portfolio</span>
-            <h1 className="sekce__nadpis">Realizace</h1>
-          </div>
-          <p className="sekce__poznamka">
-            Od celobytové malby po uměleckou stěnu — filtrovat lze podle techniky.
-          </p>
+    <>
+      <Navigace pevna />
+      <main>
+        <div className="zahlavi okraj">
+          <p className="popisek">Portfolio — {realizace.length} realizací</p>
+          <h1 className="zahlavi__nadpis">Práce, která se dá vidět zblízka</h1>
         </div>
 
-        <nav className="filtr" aria-label="Filtr podle kategorie">
+        <nav className="filtr okraj" aria-label="Filtr podle techniky">
           <Link href="/realizace" aria-current={aktivni === undefined ? 'true' : undefined}>
             Vše
           </Link>
@@ -54,15 +51,17 @@ export default async function RealizacePage({
         </nav>
 
         {realizace.length === 0 ? (
-          <p className="text-blok">V této kategorii zatím žádnou realizaci nemáme.</p>
-        ) : (
-          <div className="mrizka">
-            {realizace.map((r) => (
-              <RealizaceKarta key={r.id} realizace={r} />
-            ))}
+          <div className="blok okraj">
+            <p className="blok__text">V této technice zatím žádnou realizaci nemáme.</p>
           </div>
+        ) : (
+          <section className="rada okraj">
+            {realizace.map((r, i) => (
+              <RealizacePolozka key={r.id} realizace={r} poradi={i + 1} />
+            ))}
+          </section>
         )}
-      </section>
-    </main>
+      </main>
+    </>
   )
 }

@@ -1,3 +1,4 @@
+import { Navigace } from '@/components/Navigace'
 import { UKAZKOVE_TEXTY } from '@/lib/ukazkovyObsah'
 
 export const metadata = {
@@ -6,42 +7,35 @@ export const metadata = {
 }
 
 const PRUBEH = [
-  ['01', 'Prohlídka', 'Přijedeme se podívat na místo a probereme, co má povrch vydržet.'],
-  ['02', 'Vzorek', 'Na kus stěny naneseme vzorek v odstínu a struktuře, kterou schválíte.'],
-  ['03', 'Realizace', 'Pracujeme po vrstvách, každou necháme vyzrát. Prostor předáváme uklizený.'],
+  ['Prohlídka', 'Přijedeme se podívat na místo a probereme, co má povrch vydržet.'],
+  ['Vzorek', 'Na kus stěny naneseme vzorek v odstínu a struktuře, kterou schválíte.'],
+  ['Realizace', 'Pracujeme po vrstvách, každou necháme vyzrát. Prostor předáváme uklizený.'],
 ] as const
 
 export default function AtelierPage() {
   return (
-    <main className="wrap">
-      <section className="sekce">
-        <div className="sekce__hlava">
-          <div>
-            <span className="nadtitulek">Ateliér</span>
-            <h1 className="sekce__nadpis">{UKAZKOVE_TEXTY.oNasNadpis}</h1>
-          </div>
-          <p className="sekce__poznamka">Rodinná firma z Prahy, na trhu od roku 1992.</p>
+    <>
+      <Navigace pevna />
+      <main>
+        <div className="zahlavi okraj">
+          <p className="popisek">Ateliér — Praha</p>
+          <h1 className="zahlavi__nadpis">{UKAZKOVE_TEXTY.oNasNadpis}</h1>
+          <p className="blok__text">{UKAZKOVE_TEXTY.oNasText}</p>
         </div>
-        <p className="text-blok">{UKAZKOVE_TEXTY.oNasText}</p>
-      </section>
 
-      <section className="sekce">
-        <div className="sekce__hlava">
-          <div>
-            <span className="nadtitulek">Průběh zakázky</span>
-            <h2 className="sekce__nadpis">Jak to u nás chodí</h2>
-          </div>
-        </div>
-        <ul className="aktuality">
-          {PRUBEH.map(([cislo, nazev, popis]) => (
-            <li key={cislo}>
-              <span className="aktuality__datum">{cislo}</span>
-              <h3 className="aktuality__nadpis">{nazev}</h3>
-              <p className="aktuality__perex">{popis}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </main>
+        <section className="blok okraj">
+          <p className="popisek">Průběh zakázky</p>
+          <ol className="zapisy" style={{ marginTop: '2rem' }}>
+            {PRUBEH.map(([nazev, popis], i) => (
+              <li key={nazev}>
+                <p className="popisek">{String(i + 1).padStart(2, '0')}</p>
+                <h2 className="zapisy__nadpis">{nazev}</h2>
+                <p className="zapisy__perex">{popis}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </main>
+    </>
   )
 }

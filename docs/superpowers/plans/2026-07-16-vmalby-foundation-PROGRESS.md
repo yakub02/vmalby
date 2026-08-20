@@ -1,6 +1,77 @@
 # V Malby — stav exekuce
 
-Aktualizováno: 2026-08-12 (session 2)
+Aktualizováno: 2026-08-13 (session 3)
+
+## Session 3 (2026-08-13) — redesign dotažen, reálný obsah z vmalby.cz
+
+Vše z téhle sekce je **necommitnuté** (`git status` ukazuje jen modified/untracked,
+žádný nový commit od `8066326`). Než cokoliv dalšího, zvaž commit — je toho hodně
+a je to funkční, ověřené stavem popsaným níže.
+
+**Co se stalo, v pořadí:**
+
+1. Navázali jsme na session 2's "první pass" (commit `8066326`) — dokončili jsme
+   redesign podle `specs/2026-08-12-vyzkum-referencnich-webu.md` (Lupoi fullbleed foto,
+   Penta skladba stránky). `RealizaceKarta` → `RealizacePolozka` (fotka+popisek, ne karta),
+   asymetrická mřížka realizací, `.popisek` mikrolabel systém.
+2. `/critique` (design-critique skill) našel 4 problémy, všechny opravené:
+   hlavní nav neukazovala aktuální stránku, nav nebyla sticky (mizela při scrollu),
+   `/realizace/neexistuje` padala na necobrandovanou anglickou Next.js 404 stránku,
+   `.popisek` mikrotext měl kontrast ~2.9:1 (potřeba 4.5 AA) — opraveno v `tokens.css`
+   (`--ink-mute` ztmavena) + nové `src/app/not-found.tsx` a `src/app/(web)/not-found.tsx`
+   (pozor: musí být OBA, jinak se `<Paticka/>` renderuje dvakrát — `(web)/layout.tsx` ji
+   přidává pro cokoli uvnitř skupiny, root not-found.tsx potřebuje vlastní jen pro
+   URL mimo `(web)`).
+3. Uživatel chtěl jinou vizuální náladu — pryč od serifu, **bold sans, velká typografie,
+   sleek animace/hover efekty**. Font vybraný z 3 živých náhledů (screenshoty se skutečným
+   textem stránky): **Bricolage Grotesque** (ne Archivo Expanded, ne Unbounded) pro nadpisy,
+   Archivo zůstává pro text/mikrotypografii. `--serif` token přejmenován na `--display`.
+   Paleta zůstala — jen typografie a pohyb, žádná barevná revoluce (uživatel to tak chtěl).
+   Nový `src/components/Odhaleni.tsx` (IntersectionObserver reveal, `'use client'`),
+   sticky/underline-sweep nav, hover scale na fotkách realizací, load-in animace hero.
+   **Bug po cestě:** háček nad Ř/Č/Š/Ž ve velkém řezu (`line-height` < 1) přesahoval
+   nad vlastní řádkový box a bil se s popiskem nad nadpisem — typický problém velké
+   bold typografie s českou diakritikou. Oprava: `line-height` zpět k ~1.0–1.05 a víc
+   `margin-top` na všech nadpisech co mají popisek nad sebou (`.uvod__nadpis`,
+   `.zahlavi__nadpis`, `.detail__nadpis`, `.blok__nadpis`, `.polozka__nazev`).
+4. Uživatel chtěl reálná data z **vmalby.cz** (starý web, pořád live) místo vymyšlených
+   placeholderů — barvy, texty, fotky. `WebFetch` na živé HTML nefungovalo pro barvy/fotky
+   (markdown konverze je ořeže), takže raw `curl` + `iconv -f ISO-8859-2 -t UTF-8`
+   (starý web je v Latin-2, ne UTF-8). Zjištěno:
+   - **Skutečná značková tmavě červená: `#a31e3e`** (`css/style.css`, h1 i hover odkazy),
+     tmavší varianta `#75142a`. V `tokens.css` teď `--oxide: #A31E3E` (light),
+     `#D9748C` (dark, pro kontrast na tmavém pozadí), `--oxide-soft` odvozené.
+   - `reference.html` má **reálný, bohatý seznam zakázek 2000–2025** (Pražský hrad,
+     Národní knihovna Klementinum, Campus Science Park + Pavel Hayek, Palác Anděl,
+     Maison Ořechovka…) — nahradil vymyšlených 5 položek v `ukazkovyObsah.ts` za
+     9 reálných (`UKAZKOVE_REALIZACE`), 4 označené `vybrana: true`.
+   - Reálné kontaktní údaje (tel. `+420 775 242 809`, `vmalby@vmalby.cz`) i fakturační
+     (IČ/DIČ/účet z `kontakty.php`) — nahradily placeholdery, nové `FIREMNI_UDAJE` export
+     zobrazený na `/kontakt`.
+   - **Fotky:** staré galerie (`fotogalerie.html`, `designove-povrchy.html`,
+     `zajimave-projekty.html`) mají reálné fotky, ale **nízké rozlišení** (většina
+     700×525 nebo míň, foceno 2005–2015 mobilem/kompaktem). 15 vybraných stažených do
+     `public/realizace/*.jpg`, `FotoPlocha.tsx` rozšířen o `next/image` (`src`/`alt` props,
+     fallback na texturu placeholder když `src` chybí). **Hero na Domů zůstal texturový
+     placeholder** — žádná ze stažených fotek nemá rozlišení na fullbleed 100vh hero,
+     stažené 2000×500 slideshow fotky mají navíc vypálenou vinětu ze starého designu.
+   - **Fotky nejsou spárované 1:1 s konkrétní jmenovanou zakázkou** (galerie je organizovaná
+     podle techniky, ne podle projektu) — výjimka je "Palác Anděl", kde fotka doslova
+     ukazuje nápis "palác anděl" vyrytý do stěrky. Ostatní fotky jsou dokladové ukázky dané
+     techniky (benátský štuk, kovová stěrka…), captions (`foto__stitek`/`alt`) proto popisují
+     techniku, ne tvrdí "tohle je přesně ta budova". Řečeno uživateli přímo, ne zamlčeno.
+
+**Ověřeno v této session:** `npx tsc --noEmit` čistý po všech změnách výše (byl přerušen
+uprostřed finálního běhu eslint + vizuální kontroly dev serverem — **eslint a screenshot
+kontrola nového obsahu ještě neproběhly, udělej to před commitem**).
+
+**Ověřeno v session 4 (2026-08-15):** `npx eslint .` čisté (exit 0), `npx tsc --noEmit`
+čisté. Dev server nastartován a ověřen přes `curl`: `/realizace` má 9 položek, `/kontakt`
+obsahuje fakturační blok (IČ, DIČ, bankovní účet, e-mail), `--oxide` (`#A31E3E`) je v
+`tokens.css`, `/realizace/neexistuje` vrací HTTP 404 s vlastní stránkou a footer se
+nerenderuje dvakrát. Homepage `vybrana` filtr (4 položky: Campus Science Park, Palác
+Anděl, Klementinum, Pražský hrad — Vikárka) — ponecháno na 4, jsou to nejsilnější/
+nejznámější zakázky, na homepage grid to sedí. **Připraveno na commit.**
 
 ## ⚠️ Změna architektury — Sanity je mimo hru
 

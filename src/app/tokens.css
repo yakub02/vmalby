@@ -1,20 +1,25 @@
 /* Paleta vychází z materiálů, které firma sama zpracovává — vápno, uhel, oxidový
-   pigment, měděnka, kámen, sádra. Viz schválená vizuální nástěnka. */
+   pigment, měděnka, kámen, sádra. Rozhraní je záměrně téměř monochromní:
+   barvu na stránku má přinášet fotografie realizace, ne prvky webu.
+   Typografie: bold grotesque (Bricolage Grotesque) pro nadpisy ve velkém
+   měřítku, Archivo pro text a mikrotypografii.
+   Akcent --oxide je skutečná značková tmavě červená z vmalby.cz (#a31e3e). */
 :root {
   --ground: #E7E1D3;
   --ground-2: #DED6C4;
   --ink: #211D18;
   --ink-soft: #4A4238;
-  --oxide: #8C3B2A;
-  --oxide-soft: #B8735F;
+  --ink-mute: #5E564A;
+  --oxide: #A31E3E;
+  --oxide-soft: #C15D77;
   --verdigris: #5C6B5D;
   --line: #C7BCA6;
   --card-bg: #F1ECE0;
   --surface: #EFE9DC;
   --shadow: 0 1px 0 rgba(33, 29, 24, 0.06);
   --radius: 3px;
-  --serif: "Iowan Old Style", "Sitka Text", "Palatino Linotype", Georgia, serif;
-  --sans: "Neue Haas Grotesk Text Pro", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --display: var(--font-display), "Segoe UI", Helvetica, Arial, sans-serif;
+  --sans: var(--font-sans), "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,8 +28,9 @@
     --ground-2: #2A251E;
     --ink: #EDE6D6;
     --ink-soft: #C9BFAC;
-    --oxide: #C97157;
-    --oxide-soft: #8C3B2A;
+    --ink-mute: #948A7C;
+    --oxide: #D9748C;
+    --oxide-soft: #A31E3E;
     --verdigris: #8CA491;
     --line: #4A4238;
     --card-bg: #2A251E;

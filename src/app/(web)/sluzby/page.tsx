@@ -1,10 +1,10 @@
 import Link from 'next/link'
+import { Navigace } from '@/components/Navigace'
 import { KATEGORIE_PORADI, NAZVY_KATEGORII } from '@/lib/kategorie'
 
 export const metadata = {
   title: 'Služby — V Malby',
-  description:
-    'Malba a lakování, benátský štuk, designový beton, imitace kovů a tapetování.',
+  description: 'Malba a lakování, benátský štuk, designový beton, imitace kovů a tapetování.',
 }
 
 const POPISY: Record<(typeof KATEGORIE_PORADI)[number], string> = {
@@ -22,30 +22,31 @@ const POPISY: Record<(typeof KATEGORIE_PORADI)[number], string> = {
 
 export default function SluzbyPage() {
   return (
-    <main className="wrap">
-      <section className="sekce">
-        <div className="sekce__hlava">
-          <div>
-            <span className="nadtitulek">Služby</span>
-            <h1 className="sekce__nadpis">Pět technik, jedna dílna</h1>
-          </div>
-          <p className="sekce__poznamka">
-            U každé techniky najdete hotové realizace v portfoliu.
-          </p>
+    <>
+      <Navigace pevna />
+      <main>
+        <div className="zahlavi okraj">
+          <p className="popisek">Služby — pět technik</p>
+          <h1 className="zahlavi__nadpis">Co umíme udělat na zdi</h1>
         </div>
 
-        <ul className="aktuality">
-          {KATEGORIE_PORADI.map((kategorie) => (
-            <li key={kategorie}>
-              <span className="aktuality__datum">{NAZVY_KATEGORII[kategorie]}</span>
-              <p className="aktuality__perex">{POPISY[kategorie]}</p>
-              <p className="vyzva__radek">
-                <Link href={`/realizace?kategorie=${kategorie}`}>Realizace v této technice</Link>
-              </p>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </main>
+        <section className="okraj">
+          <ul className="zapisy">
+            {KATEGORIE_PORADI.map((kategorie, i) => (
+              <li key={kategorie}>
+                <p className="popisek">{String(i + 1).padStart(2, '0')}</p>
+                <h2 className="zapisy__nadpis">{NAZVY_KATEGORII[kategorie]}</h2>
+                <p className="zapisy__perex">{POPISY[kategorie]}</p>
+                <p style={{ marginTop: '1.25rem' }}>
+                  <Link className="odkaz" href={`/realizace?kategorie=${kategorie}`}>
+                    Realizace
+                  </Link>
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </main>
+    </>
   )
 }

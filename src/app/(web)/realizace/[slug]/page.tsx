@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { FotoPlocha } from '@/components/FotoPlocha'
+import { Navigace } from '@/components/Navigace'
 import { NAZVY_KATEGORII } from '@/lib/kategorie'
 import { UKAZKOVE_REALIZACE } from '@/lib/ukazkovyObsah'
 
@@ -28,28 +29,37 @@ export default async function RealizaceDetailPage({
   if (!realizace) notFound()
 
   return (
-    <main className="wrap detail">
-      <span className="nadtitulek">
-        {NAZVY_KATEGORII[realizace.kategorie]} — {realizace.lokalita} — {realizace.rok}
-      </span>
-      <h1 className="detail__nadpis">{realizace.nazev}</h1>
+    <>
+      <Navigace pevna />
+      <main>
+        <div className="zahlavi okraj">
+          <p className="popisek">
+            {NAZVY_KATEGORII[realizace.kategorie]} — {realizace.lokalita} — {realizace.rok}
+          </p>
+          <h1 className="detail__nadpis">{realizace.nazev}</h1>
 
-      {/* Bezpečné jen proto, že popis prochází serverovou sanitizací při ukládání. */}
-      <div className="detail__popis" dangerouslySetInnerHTML={{ __html: realizace.popis }} />
+          {/* Bezpečné jen proto, že popis prochází serverovou sanitizací při ukládání. */}
+          <div className="detail__popis" dangerouslySetInnerHTML={{ __html: realizace.popis }} />
+        </div>
 
-      <div className="detail__galerie">
-        {realizace.fotky.map((fotka, i) => (
-          <FotoPlocha
-            key={fotka.id}
-            pomer={i === 0 ? '16 / 9' : '4 / 3'}
-            stitek={i === 0 ? 'Foto: doplní se' : undefined}
-          />
-        ))}
-      </div>
+        <div className="galerie okraj">
+          {realizace.fotky.map((fotka) => (
+            <div key={fotka.id} className="galerie__snimek">
+              <FotoPlocha
+                src={fotka.url}
+                alt={fotka.popisek || realizace.nazev}
+                stitek={fotka.url ? undefined : 'Foto: doplní se'}
+              />
+            </div>
+          ))}
+        </div>
 
-      <Link className="zpet" href="/realizace">
-        ← Zpět na realizace
-      </Link>
-    </main>
+        <div className="blok okraj" style={{ marginTop: 'clamp(3rem, 7vw, 5rem)' }}>
+          <Link className="odkaz" href="/realizace">
+            Zpět na realizace
+          </Link>
+        </div>
+      </main>
+    </>
   )
 }
