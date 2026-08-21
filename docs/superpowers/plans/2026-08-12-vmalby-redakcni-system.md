@@ -1061,7 +1061,7 @@ git commit -m "feat: add Realizace server actions with path revalidation"
 - Consumes: `slugify` z `@/lib/slug`, `cestyProClanek` a `cestyProSiteTexts` z `@/lib/revalidace`, `FormState` z `@/lib/forms`.
 - Produces: `ulozClanek`, `smazClanek`, `ulozSiteTexts` — všechny se signaturou server action jako v Tasku 5.
 
-- [ ] **Step 1: Napiš padající test pro články**
+- [x] **Step 1: Napiš padající test pro články**
 
 Vytvoř `src/lib/actions/clanek.test.ts`:
 
@@ -1137,12 +1137,12 @@ describe('smazClanek', () => {
 })
 ```
 
-- [ ] **Step 2: Spusť test, ať vidíš, že padá**
+- [x] **Step 2: Spusť test, ať vidíš, že padá**
 
 Run: `npx vitest run src/lib/actions/clanek.test.ts`
 Expected: FAIL — modul neexistuje.
 
-- [ ] **Step 3: Implementace článků**
+- [x] **Step 3: Implementace článků**
 
 Vytvoř `src/lib/actions/clanek.ts`:
 
@@ -1193,7 +1193,7 @@ export async function smazClanek(id: string): Promise<void> {
 }
 ```
 
-- [ ] **Step 4: Napiš padající test pro texty stránek**
+- [x] **Step 4: Napiš padající test pro texty stránek**
 
 Vytvoř `src/lib/actions/siteTexts.test.ts`:
 
@@ -1255,12 +1255,12 @@ describe('ulozSiteTexts', () => {
 })
 ```
 
-- [ ] **Step 5: Spusť test, ať vidíš, že padá**
+- [x] **Step 5: Spusť test, ať vidíš, že padá**
 
 Run: `npx vitest run src/lib/actions/siteTexts.test.ts`
 Expected: FAIL — modul neexistuje.
 
-- [ ] **Step 6: Implementace textů stránek**
+- [x] **Step 6: Implementace textů stránek**
 
 Vytvoř `src/lib/actions/siteTexts.ts`. Seznam povolených polí je bezpečnostní hranice — bez něj by šlo formulářem přepsat `id` a rozbít singleton:
 
@@ -1314,12 +1314,12 @@ export async function ulozSiteTexts(
 }
 ```
 
-- [ ] **Step 7: Spusť testy**
+- [x] **Step 7: Spusť testy**
 
 Run: `npx vitest run`
 Expected: PASS, všechny soubory.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add -A

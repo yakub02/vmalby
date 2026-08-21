@@ -21,8 +21,11 @@ A rovnou i **Task 5 (server actions Realizace + revalidace)** — `src/lib/reval
 (cesty pro revalidaci) a `src/lib/actions/realizace.ts` (`ulozRealizaci`/`smazRealizaci`,
 Prisma a `next/cache` mockované v testech). Žádné odchylky od plánu. `npx tsc --noEmit`,
 `npx eslint .` i `npx vitest run` (19 testů) čisté. Commitnuto zvlášť.
-Další na řadě: Task 6 (server actions Články a Texty stránek) z
-`plans/2026-08-12-vmalby-redakcni-system.md`.
+A rovnou i **Task 6 (server actions Články a Texty stránek)** — `src/lib/actions/clanek.ts`
+(`ulozClanek`/`smazClanek`) a `src/lib/actions/siteTexts.ts` (`ulozSiteTexts`, s
+whitelistem povolených polí proti přepsání `id` singletonu). Žádné odchylky od plánu.
+`npx tsc --noEmit`, `npx eslint .` i `npx vitest run` (26 testů) čisté. Commitnuto zvlášť.
+Další na řadě: Task 7 (sanitizace rich textu) z `plans/2026-08-12-vmalby-redakcni-system.md`.
 
 ## Session 5 (2026-08-20) — commit session 3/4 práce
 
