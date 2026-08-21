@@ -1,0 +1,144 @@
+.sprava {
+  min-height: 100dvh;
+  background: var(--ground);
+}
+
+.sprava__hlavicka {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--card-bg);
+}
+
+.sprava__znacka {
+  font-family: var(--display);
+  font-weight: 600;
+}
+
+.sprava__nav {
+  display: flex;
+  gap: 1rem;
+  margin-right: auto;
+}
+
+.sprava__nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+}
+
+.sprava__nav a:hover {
+  color: var(--ink);
+  border-bottom-color: var(--oxide);
+}
+
+.sprava__odhlasit {
+  background: none;
+  border: 1px solid var(--line);
+  padding: 0.375rem 0.75rem;
+  font: inherit;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.sprava__obsah {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.sprava__seznam {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sprava__radek {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+}
+
+.sprava__radek-nazev {
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.sprava__meta {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.sprava__pole {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.sprava__pole input[type='text'],
+.sprava__pole input[type='number'],
+.sprava__pole input[type='date'],
+.sprava__pole input[type='email'],
+.sprava__pole select,
+.sprava__pole textarea {
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--line);
+  background: var(--ground);
+  color: var(--ink);
+  font: inherit;
+}
+
+.sprava__tlacitko {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: var(--oxide);
+  color: var(--ground);
+  font: inherit;
+  cursor: pointer;
+}
+
+.sprava__chyba {
+  color: var(--oxide);
+  margin: 0 0 1rem;
+}
+
+.editor__panel {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-bottom: none;
+  background: var(--card-bg);
+}
+
+.editor__nastroj {
+  padding: 0.25rem 0.625rem;
+  border: 1px solid var(--line);
+  background: var(--ground);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.editor__nastroj[aria-pressed='true'] {
+  background: var(--oxide);
+  color: var(--ground);
+}
+
+.editor__plocha .ProseMirror {
+  min-height: 12rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  background: var(--ground);
+  outline: none;
+}

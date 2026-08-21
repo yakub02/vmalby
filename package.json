@@ -15,6 +15,10 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
+    "@tiptap/extension-image": "^3.30.2",
+    "@tiptap/pm": "^3.30.2",
+    "@tiptap/react": "^3.30.2",
+    "@tiptap/starter-kit": "^3.30.2",
     "next": "16.2.10",
     "pg": "^8.23.0",
     "react": "19.2.4",

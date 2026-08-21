@@ -1,8 +1,42 @@
 # V Malby — stav exekuce
 
-Aktualizováno: 2026-08-21 (session 6)
+Aktualizováno: 2026-08-21 (session 6, pokračování)
 
-## Session 6 (2026-08-21) — Task 1 dokončen (Prisma migrace)
+## Session 6 (2026-08-21), pokračování — Task 9 (redakční rozhraní /sprava)
+
+Implementováno kompletně dle plánu, žádné odchylky v kódu: Tiptap editor
+(`src/components/Editor.tsx`), `SmazatTlacitko`, `RealizaceForm`, `ClanekForm`,
+`TextyForm`, layout + CSS administrace (`src/app/sprava/`), seznamy a detaily
+pro Realizace i Články (`[id]/page.tsx`, `id === 'novy'` = nový záznam),
+`src/app/sprava/texty/page.tsx`. `npx tsc --noEmit` a `npx eslint .` čisté.
+
+**Krok 10 (manuální průchod adminem přes `npm run dev`) je BLOKOVANÝ** —
+stejný kořenový problém jako Task 8 (exFAT na `E:` nepodporuje NTFS junction
+pointy), tentokrát ne při `next build`, ale přímo při `next dev`: jakákoli
+`/sprava` routa, která sáhne na Prisma (tzn. všechny kromě `/sprava` samotné,
+což jen redirectuje), vrací HTTP 500, protože Turbopack se snaží vytvořit
+junction point pro `pg` (Prisma driver adapter) a exFAT to nedovolí. Ověřeno
+v `.next/dev/logs/next-development.log`: `TurbopackInternalError: failed to
+create junction point ... node_modules\pg ... Nesprávná funkce. (os error 1)`.
+Přihlašovací stránka (`/prihlaseni`, nesahá na Prisma) i redirect z `/sprava`
+fungovaly normálně (307), samotné admin stránky ne. Otestováno ručně podepsaným
+session cookie přes `curl` (bez nutnosti procházet React Server Action
+protokol prohlížečem) — potvrzeno, že padá kód, ne moje test metoda.
+
+**Tohle dál blokuje i Task 10 a Task 8's Step 7, oboje vyžadují `npm run
+build` nebo funkční `/sprava`/`npm run dev` s daty z DB.** Dokud se filesystém
+nevyřeší (přesun na NTFS, nebo WSL), nejde lokálně ověřit nic, co se dotkne
+Prisma přes Turbopack — ani dev, ani build. `next dev` fungoval dřív (session
+4) jen proto, že tehdy žádná stránka ještě nesahala na Prisma/pg za běhu.
+
+Další na řadě: Task 10 (veřejné stránky z databáze) z
+`plans/2026-08-12-vmalby-redakcni-system.md` — počítej s tím, že i jeho
+Step 4 (ověření přes `npm run dev`) bude stejně blokované, dokud se nevyřeší
+filesystém. Doporučuju při další session nejdřív probrat s uživatelem, jestli
+přesunout projekt na NTFS/WSL, než se pokračuje dál naslepo bez možnosti
+cokoliv reálně proklikat.
+
+## Session 6 (2026-08-21), první část — Task 1 dokončen (Prisma migrace)
 
 Blocker z předchozích sessions vyřešen: Docker Desktop nastartován, čistá
 instance Postgresu spuštěná v kontejneru `vmalby-pg` (`postgres:16`, port

@@ -1634,13 +1634,13 @@ git commit -m "feat: add authenticated image upload with sharp resizing"
 - Consumes: čtecí vrstva z Tasku 4, server actions z Tasků 5–6, `/api/upload` z Tasku 8.
 - Produces: kompletní redakční UI. Trasa `/sprava/realizace/novy` a `/sprava/clanky/novy` znamená „nový záznam" (id `novy` je vyhrazené).
 
-- [ ] **Step 1: Instalace editoru**
+- [x] **Step 1: Instalace editoru**
 
 ```bash
 npm install @tiptap/react @tiptap/pm @tiptap/starter-kit @tiptap/extension-image
 ```
 
-- [ ] **Step 2: Editor**
+- [x] **Step 2: Editor**
 
 Vytvoř `src/components/Editor.tsx` — klientská komponenta, která drží HTML v skrytém inputu, aby ho server action dostala jako běžné pole formuláře:
 
@@ -1724,7 +1724,7 @@ export function Editor({ name, vychozi }: { name: string; vychozi: string }) {
 
 `immediatelyRender: false` je povinné — bez něj Tiptap v Next SSR hlásí hydration mismatch.
 
-- [ ] **Step 3: Layout administrace**
+- [x] **Step 3: Layout administrace**
 
 Vytvoř `src/app/sprava/layout.tsx`:
 
@@ -1765,7 +1765,7 @@ export default function SpravaPage() {
 }
 ```
 
-- [ ] **Step 4: Styl administrace**
+- [x] **Step 4: Styl administrace**
 
 Vytvoř `src/app/sprava/sprava.css` — střídmé, čitelné, na tokenech:
 
@@ -1916,7 +1916,7 @@ Vytvoř `src/app/sprava/sprava.css` — střídmé, čitelné, na tokenech:
 }
 ```
 
-- [ ] **Step 5: Mazací tlačítko**
+- [x] **Step 5: Mazací tlačítko**
 
 Vytvoř `src/components/SmazatTlacitko.tsx` — potvrzení je tu proto, že mazání je nevratné:
 
@@ -1951,7 +1951,7 @@ export function SmazatTlacitko({
 }
 ```
 
-- [ ] **Step 6: Formulář realizace**
+- [x] **Step 6: Formulář realizace**
 
 Vytvoř `src/components/RealizaceForm.tsx`:
 
@@ -2038,7 +2038,7 @@ export function RealizaceForm({ vychozi = {} }: { vychozi?: Vychozi }) {
 }
 ```
 
-- [ ] **Step 7: Formulář článku**
+- [x] **Step 7: Formulář článku**
 
 Vytvoř `src/components/ClanekForm.tsx`:
 
@@ -2113,7 +2113,7 @@ export function ClanekForm({ vychozi = {} }: { vychozi?: Vychozi }) {
 }
 ```
 
-- [ ] **Step 8: Seznamy a detaily**
+- [x] **Step 8: Seznamy a detaily**
 
 Vytvoř `src/app/sprava/realizace/page.tsx`:
 
@@ -2225,7 +2225,7 @@ export default async function RealizaceDetailPage({
 
 Vytvoř `src/app/sprava/clanky/[id]/page.tsx` podle stejného vzoru — `id === 'novy'` vykreslí prázdný `<ClanekForm />`, jinak `prisma.clanek.findUnique({ where: { id } })`, při `null` zavolej `notFound()`, jinak `<ClanekForm vychozi={clanek} />` s nadpisem `clanek.nadpis`.
 
-- [ ] **Step 9: Texty stránek**
+- [x] **Step 9: Texty stránek**
 
 Vytvoř `src/components/TextyForm.tsx`:
 
@@ -2301,9 +2301,17 @@ export default async function SpravaTextyPage() {
 
 Seznam `POLE` musí odpovídat `POVOLENA_POLE` v `src/lib/actions/siteTexts.ts` (Task 6) — pole, které tu chybí, půjde uložit jen přes ruční request, a pole navíc se tiše zahodí.
 
-- [ ] **Step 10: Ověření administrace**
+- [ ] **Step 10: Ověření administrace** ⚠️ **BLOKOVÁNO** — viz PROGRESS.md, session 6.
+`next dev` na tomhle stroji padá na stejný exFAT junction-point problém jako
+`npm run build` v Tasku 8, tentokrát na `pg` — jakákoli `/sprava` routa, co
+sáhne na Prisma, vrací HTTP 500 (`TurbopackInternalError: failed to create
+junction point`). Manuální průchod adminem podle kroků níže **není ověřeno**.
+Nahrazeno: `npx tsc --noEmit` a `npx eslint .`, oboje čisté. Routing/redirect
+(`/sprava` → `/prihlaseni`, `/sprava/realizace/novy` → 200 s formulářem) ověřen
+alespoň pro nepřihlášený stav a přes `curl` s ručně podepsaným session cookie
+tam, kde to nespadlo na `pg`.
 
-Run: `npm run dev`, přihlas se a projdi:
+Zbytek kroku pro budoucí referenci, až bude filesystém vyřešený:
 1. `/sprava` přesměruje na `/sprava/realizace`
 2. „+ Přidat realizaci" → vyplň, vlož fotku do popisu, ulož → objeví se v seznamu
 3. „Upravit" → změň název → uloží se
@@ -2312,7 +2320,7 @@ Run: `npm run dev`, přihlas se a projdi:
 6. „Texty stránek" → ulož → „Uloženo."
 7. „Odhlásit" → přesměruje na `/prihlaseni`, `/sprava` už není přístupná
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git add -A
