@@ -197,7 +197,7 @@ Do `.gitignore` přidej na konec:
 !/public/uploads/.gitkeep
 ```
 
-- [ ] **Step 6: Lokální databáze a první migrace** ⬅ **TADY SE EXEKUCE ZASTAVILA**
+- [x] **Step 6: Lokální databáze a první migrace**
 
 Potřebuješ běžící Postgres a `DATABASE_URL` v `.env.local`. Pokud máš Docker:
 
@@ -215,7 +215,7 @@ Expected: vznikne `prisma/migrations/<timestamp>_init/migration.sql` a vypíše 
 
 Pokud Postgres neběží, **zastav se a nahlas to** — nezakládej SQLite náhradu, přenositelnost na Postgres je zadání.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add -A

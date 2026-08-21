@@ -1,6 +1,27 @@
 # V Malby — stav exekuce
 
-Aktualizováno: 2026-08-13 (session 3)
+Aktualizováno: 2026-08-21 (session 6)
+
+## Session 6 (2026-08-21) — Task 1 dokončen (Prisma migrace)
+
+Blocker z předchozích sessions vyřešen: Docker Desktop nastartován, čistá
+instance Postgresu spuštěná v kontejneru `vmalby-pg` (`postgres:16`, port
+**5433**, aby nekolidovala s neznámou instancí na 5432 na stroji). `DATABASE_URL`
+v `.env.local` přepnuto na port 5433. `npx prisma migrate dev --name init`
+proběhla čistě (`prisma/migrations/20260821095539_init/`), `npx prisma generate`
+taky. Task 1 je tím kompletní — commitnuto. **Pozor:** kontejner `vmalby-pg`
+je bez `--restart`, takže po restartu Dockeru/stroje ho bude potřeba znovu
+spustit ručně (`docker start vmalby-pg`, ne `docker run` — jméno je obsazené).
+Další na řadě: Task 4 (čtecí vrstva obsahu) z `plans/2026-08-12-vmalby-redakcni-system.md`.
+
+## Session 5 (2026-08-20) — commit session 3/4 práce
+
+Stav ze session 4 (redesign + reálný obsah z vmalby.cz) byl beze změny —
+`git status` odpovídal přesně tomu, co popisuje session 3/4 níže. Znovu ověřeno
+`npx tsc --noEmit` a `npx eslint .` (oba čisté) a commitnuto jako `a3adf07`
+(vyjma `.claude/` a `.impeccable.md`, což je lokální nástrojová konfigurace,
+ne obsah projektu). Další na řadě: Task 1 (Prisma migrace, čeká na přístup
+k Postgresu) nebo Task 4 (čtecí vrstva obsahu) z `plans/2026-08-12-vmalby-redakcni-system.md`.
 
 ## Session 3 (2026-08-13) — redesign dotažen, reálný obsah z vmalby.cz
 
