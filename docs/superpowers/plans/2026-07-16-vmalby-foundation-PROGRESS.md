@@ -25,7 +25,22 @@ A rovnou i **Task 6 (server actions Články a Texty stránek)** — `src/lib/ac
 (`ulozClanek`/`smazClanek`) a `src/lib/actions/siteTexts.ts` (`ulozSiteTexts`, s
 whitelistem povolených polí proti přepsání `id` singletonu). Žádné odchylky od plánu.
 `npx tsc --noEmit`, `npx eslint .` i `npx vitest run` (26 testů) čisté. Commitnuto zvlášť.
-Další na řadě: Task 7 (sanitizace rich textu) z `plans/2026-08-12-vmalby-redakcni-system.md`.
+A rovnou i **Task 7 (sanitizace rich textu)** — `src/lib/sanitizace.ts` (`sanitizujObsah`,
+`sanitize-html` s allowlistem `p/strong/em/br/img`), zapojeno do `popis` v Realizace
+a `obsah` v Článku actions. Drobná odchylka od plánu: knihovna vrací `<img ... />`
+místo `<img ...>` a u `javascript:` URL nechává prázdný `<img />` (atribut zahozen,
+tag ne) — dle poznámky v plánu upraveno **očekávání testů**, ne sanitizační pravidla.
+`npx tsc --noEmit`, `npx eslint .` i `npx vitest run` (33 testů) čisté. Commitnuto zvlášť.
+
+**Vedlejší zjištění (mimo scope Tasku 7):** `npm audit` po instalaci `sanitize-html`
+hlásí 8 high-severity zranitelností, ale všechny jsou v existujících závislostech
+nesouvisejících s touto instalací — `next` (16.2.10, plán pinuje verzi a zakazuje
+upgrade), `postcss`, `sharp`, `prisma`/`@prisma/config`, `brace-expansion`, `js-yaml`.
+Neřešeno, protože oprava (`npm audit fix --force`) by upgradovala `next` na 16.3.2 a
+`prisma` na 6.12.0 — mimo scope a proti global constraint plánu. Řekni uživateli, ať
+rozhodne, jestli/kdy tohle řešit samostatně.
+
+Další na řadě: Task 8 (nahrávání fotek) z `plans/2026-08-12-vmalby-redakcni-system.md`.
 
 ## Session 5 (2026-08-20) — commit session 3/4 práce
 

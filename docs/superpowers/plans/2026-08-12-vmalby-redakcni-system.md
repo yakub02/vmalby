@@ -1337,14 +1337,14 @@ git commit -m "feat: add Clanek and SiteTexts server actions"
 **Interfaces:**
 - Produces: `sanitizujObsah(html: string): string`
 
-- [ ] **Step 1: Instalace**
+- [x] **Step 1: Instalace**
 
 ```bash
 npm install sanitize-html
 npm install -D @types/sanitize-html
 ```
 
-- [ ] **Step 2: Napiš padající testy**
+- [x] **Step 2: Napiš padající testy**
 
 Vytvoř `src/lib/sanitizace.test.ts`:
 
@@ -1382,12 +1382,12 @@ describe('sanitizujObsah', () => {
 })
 ```
 
-- [ ] **Step 3: Spusť test, ať vidíš, že padá**
+- [x] **Step 3: Spusť test, ať vidíš, že padá**
 
 Run: `npx vitest run src/lib/sanitizace.test.ts`
 Expected: FAIL — modul neexistuje.
 
-- [ ] **Step 4: Implementace**
+- [x] **Step 4: Implementace**
 
 Vytvoř `src/lib/sanitizace.ts`. Seznam tagů odpovídá tomu, co editor v Tasku 8 umí — víc se do databáze nedostane, ani kdyby někdo poslal request ručně:
 
@@ -1404,12 +1404,12 @@ export function sanitizujObsah(html: string): string {
 }
 ```
 
-- [ ] **Step 5: Spusť testy**
+- [x] **Step 5: Spusť testy**
 
 Run: `npx vitest run src/lib/sanitizace.test.ts`
 Expected: PASS. Pokud se liší jen formátování výstupu (např. `<img ... />` vs `<img ...>`), uprav **očekávání v testu** podle skutečného výstupu knihovny — ne sanitizační pravidla.
 
-- [ ] **Step 6: Zapoj sanitizaci do server actions**
+- [x] **Step 6: Zapoj sanitizaci do server actions**
 
 V `src/lib/actions/realizace.ts` přidej import a obal `popis`:
 
@@ -1429,7 +1429,7 @@ V `src/lib/actions/clanek.ts` stejně pro `obsah`:
 const obsah = sanitizujObsah(String(formData.get('obsah') ?? ''))
 ```
 
-- [ ] **Step 7: Přidej regresní test do akcí**
+- [x] **Step 7: Přidej regresní test do akcí**
 
 Do `src/lib/actions/clanek.test.ts` doplň:
 
@@ -1447,12 +1447,12 @@ it('sanitizuje obsah před uložením', async () => {
 })
 ```
 
-- [ ] **Step 8: Spusť testy**
+- [x] **Step 8: Spusť testy**
 
 Run: `npx vitest run`
 Expected: PASS.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add -A

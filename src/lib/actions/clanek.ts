@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/db'
 import { slugify } from '@/lib/slug'
 import { cestyProClanek } from '@/lib/revalidace'
+import { sanitizujObsah } from '@/lib/sanitizace'
 import type { FormState } from '@/lib/forms'
 
 export async function ulozClanek(
@@ -13,7 +14,7 @@ export async function ulozClanek(
   const id = String(formData.get('id') ?? '').trim()
   const nadpis = String(formData.get('nadpis') ?? '').trim()
   const perex = String(formData.get('perex') ?? '').trim()
-  const obsah = String(formData.get('obsah') ?? '')
+  const obsah = sanitizujObsah(String(formData.get('obsah') ?? ''))
   const titulniFoto = String(formData.get('titulniFoto') ?? '').trim() || null
   const datumRaw = String(formData.get('datum') ?? '').trim()
 

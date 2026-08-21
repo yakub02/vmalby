@@ -55,6 +55,18 @@ describe('ulozClanek', () => {
       '/aktuality/jak-delame-stuk',
     ])
   })
+
+  it('sanitizuje obsah před uložením', async () => {
+    prismaMock.clanek.create.mockResolvedValue({ slug: 'jak-delame-stuk' })
+
+    await ulozClanek({}, formular({
+      nadpis: 'Jak děláme štuk',
+      obsah: '<p>Text</p><script>alert(1)</script>',
+    }))
+
+    const data = prismaMock.clanek.create.mock.calls[0][0].data
+    expect(data.obsah).toBe('<p>Text</p>')
+  })
 })
 
 describe('smazClanek', () => {

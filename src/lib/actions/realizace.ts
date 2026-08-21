@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/db'
 import { slugify } from '@/lib/slug'
 import { cestyProRealizaci } from '@/lib/revalidace'
+import { sanitizujObsah } from '@/lib/sanitizace'
 import type { FormState } from '@/lib/forms'
 
 const KATEGORIE: Kategorie[] = ['MALBA', 'STUK', 'BETON', 'KOVY', 'TAPETY']
@@ -18,7 +19,7 @@ export async function ulozRealizaci(
   const lokalita = String(formData.get('lokalita') ?? '').trim()
   const rokRaw = String(formData.get('rok') ?? '').trim()
   const kategorieRaw = String(formData.get('kategorie') ?? '').trim()
-  const popis = String(formData.get('popis') ?? '')
+  const popis = sanitizujObsah(String(formData.get('popis') ?? ''))
   const vybrana = formData.get('vybrana') === 'on'
 
   if (!nazev) return { chyba: 'Vyplňte název realizace.' }
