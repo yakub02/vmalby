@@ -2340,15 +2340,15 @@ git commit -m "feat: add /sprava editorial interface for all content types"
 **Interfaces:**
 - Consumes: čtecí vrstva z Tasku 4.
 
-- [ ] **Step 1: Domovská stránka z databáze**
+- [x] **Step 1: Domovská stránka z databáze**
 
 Přepiš `src/app/page.tsx` — server component, která načte `nactiSiteTexts()` a `vybraneRealizace(4)` a vykreslí hero (nadpis + podnadpis z textů) a mřížku vybraných realizací s odkazem na detail. Kde není foto, vykresli plochu `background: var(--ground-2)` místo `<img>` — placeholdery se doplní později.
 
-- [ ] **Step 2: Výpis realizací**
+- [x] **Step 2: Výpis realizací**
 
 `src/app/realizace/page.tsx` — server component, `vsechnyRealizace()`, mřížka karet (název, lokalita, rok, kategorie), každá odkazuje na `/realizace/${slug}`.
 
-- [ ] **Step 3: Detail realizace**
+- [x] **Step 3: Detail realizace**
 
 `src/app/realizace/[slug]/page.tsx`:
 
@@ -2387,14 +2387,17 @@ export default async function RealizaceDetailPage({
 
 `dangerouslySetInnerHTML` je tu bezpečné jen proto, že obsah prošel `sanitizujObsah` při ukládání (Task 7) — nikdy sem nepouštěj text z jiného zdroje.
 
-- [ ] **Step 4: Ověření**
-
-1. `npm run build` → zelený
-2. `npm run dev` → v adminu přidej realizaci s příznakem „Zobrazit na úvodní stránce"
-3. Otevři `/` → realizace je vidět **bez restartu serveru** (to ověřuje, že `revalidatePath` funguje)
+- [x] **Step 4: Ověření** — na `C:\Users\kvrag\Documents\vmalby` (NTFS, viz PROGRESS.md).
+`npm run build` zelený, `/` je `○` static, `/realizace/[slug]` vygenerovalo
+všech 9 stránek přes `generateStaticParams`. Obsah ověřen přes `curl`: `/`
+zobrazuje `heroNadpis` a `oNasText` z DB, `/realizace` zobrazuje `Pražský hrad`
+i `Klementinum`, `/realizace/campus-science-park` vrací 200 se správným
+nadpisem i popisem. **`revalidatePath` po uložení v adminu (kroky 2–3 níže)
+neověřeno ručně v prohlížeči** — jen že statický render čte aktuální DB obsah
+při buildu/prvním requestu.
 4. Klikni na detail → `/realizace/<slug>` zobrazí popis i galerii
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A

@@ -1,9 +1,46 @@
 # V Malby — stav exekuce
 
-Aktualizováno: 2026-08-21 (session 6, vyřešen exFAT blocker)
+Aktualizováno: 2026-08-21 (session 6, Task 10 hotový)
 
-## ⚠️ Projekt se přesunul z `E:\_WORK\_VMALBY` na `C:\Users\kvrag\Documents\vmalby`
+## Session 6 (2026-08-21), třetí část — Task 10 (veřejné stránky z databáze)
 
+Homepage (`src/app/(web)/page.tsx`), výpis realizací (`.../realizace/page.tsx`)
+a detail (`.../realizace/[slug]/page.tsx`) přepojeny z `ukazkovyObsah.ts` na
+skutečné fetchery (`vybraneRealizace`, `vsechnyRealizace`, `realizacePodleSlug`,
+`vsechnyClanky`, `nactiSiteTexts`). `RealizacePolozka` teď bere typ
+`RealizaceSFotkami` z `@/lib/content/realizace`, ne z `ukazkovyObsah`.
+`/atelier`, `/sluzby`, `/kontakt`, `/aktuality` **záměrně nezměněny** — mimo
+literární scope plánu (Task 10 = „tenký řez", jmenuje jen tři soubory výše).
+
+**Než k tomu došlo:** DB byla po Tasku 1 prázdná — přepojení na prázdné
+fetchery by webu smazalo veškerý viditelný obsah. Uživatel odsouhlasil
+jednorázový seed. Napsán `prisma/seed.ts` (spouští se `npm run db:seed` →
+`node --experimental-strip-types prisma/seed.ts`, Node 22 umí TS stripping
+nativně, není potřeba `tsx`/`ts-node`), který přes `upsert` (idempotentní,
+klíčované na `slug`) nahrál přesně ten samý reálný obsah, co byl v
+`ukazkovyObsah.ts` (9 realizací/15 fotek/2 články/`siteTexts`), do DB.
+`prisma/seed.ts` vyloučen z `tsconfig.json` `exclude` (explicitní `.ts`
+přípona v importu vadí `tsc`, ale Node ho tak vyžaduje) — je to samostatný
+jednorázový skript, ne součást app kódu. `ukazkovyObsah.ts` **zůstal v repu**
+nesmazaný (pořád ho používají `/atelier`, `/sluzby`, `/kontakt`, `/aktuality`).
+
+**Ověřeno na `C:\Users\kvrag\Documents\vmalby`:** `npx tsc --noEmit`,
+`npx eslint .` (0 chyb), `npx vitest run` (37 testů) čisté. `npm run build`
+zelený — `/` je `○` static (revalidace přes `revalidatePath` ze server
+actions, jak zamýšlí architektura), `/realizace/[slug]` vygenerovalo všech
+9 stránek staticky. `npm run dev` + `curl` potvrdil reálný obsah na `/`
+(hero nadpis, ateliér text, článková ukázka), `/realizace` (Pražský hrad,
+Klementinum) i `/realizace/campus-science-park` (200, správný nadpis/popis).
+**Neověřeno ručně v prohlížeči:** že uložení v `/sprava` promítne změnu na
+`/` bez restartu (revalidatePath) — jen že statický render čte DB správně.
+
+Zbývá z plánu **jen Task 11 (nasazení na hosting)** — čeká na parametry
+hostingu od uživatele (Node.js runtime? Postgres? git/FTP/SSH? persistentní
+disk pro `/public/uploads`?), viz Task 11 v plánu.
+
+## Session 6 (2026-08-21), druhá část — vyřešen exFAT blocker, projekt na `C:`
+
+⚠️ **Projekt se přesunul z `E:\_WORK\_VMALBY` na `C:\Users\kvrag\Documents\vmalby`.**
 exFAT blocker popsaný níže je vyřešen — **repo je teď na GitHubu
 (`https://github.com/yakub02/vmalby`, remote `origin`, branch `master`) a
 klonováno na `C:\Users\kvrag\Documents\vmalby`, kde `C:` je NTFS.** Ověřeno
@@ -227,17 +264,17 @@ Co to znamenalo:
 ## Stav tasků nového plánu
 | # | Úkol | Stav |
 |---|------|------|
-| 1 | Prisma, databáze a obsahové modely | ⚠️ ČÁSTEČNĚ (commit `2f61e01`) — schéma, `prisma.config.ts`, klient s adapterem a `prisma generate` hotové; **chybí migrace, blokuje ji přístup k databázi** |
+| 1 | Prisma, databáze a obsahové modely | ✅ HOTOVO (commit `4b9841d`) — migrace proti Postgresu v Dockeru |
 | 2 | Vitest a testovací kostra | ✅ HOTOVO (commit `2f61e01`) — `slugify` + 4 testy |
 | 3 | Přihlášení, podepsané session cookie, ochrana /sprava | ✅ HOTOVO — 6 testů podpisu, ochrana ověřená za běhu (307 na `/prihlaseni`) |
-| 4 | Čtecí vrstva obsahu | čeká |
-| 5 | Server actions Realizace + revalidace | čeká |
-| 6 | Server actions Články a Texty stránek | čeká |
-| 7 | Sanitizace rich textu | čeká |
-| 8 | Nahrávání fotek (sharp) | čeká |
-| 9 | Redakční rozhraní /sprava | čeká |
-| 10 | Veřejné stránky — tenký řez | čeká |
-| 11 | Nasazení na hosting (RUČNÍ) | čeká |
+| 4 | Čtecí vrstva obsahu | ✅ HOTOVO (commit `57e6831`) |
+| 5 | Server actions Realizace + revalidace | ✅ HOTOVO (commit `dc7bf83`) |
+| 6 | Server actions Články a Texty stránek | ✅ HOTOVO (commit `3a555a2`) |
+| 7 | Sanitizace rich textu | ✅ HOTOVO (commit `d7e9007`) |
+| 8 | Nahrávání fotek (sharp) | ✅ HOTOVO (commit `5ee529e`) |
+| 9 | Redakční rozhraní /sprava | ✅ HOTOVO (commit `cc230f0`) — routing/render ověřen, ruční klikací test v prohlížeči ne |
+| 10 | Veřejné stránky — tenký řez | ✅ HOTOVO — DB naseedovaná reálným obsahem, `npm run build` zelený |
+| 11 | Nasazení na hosting (RUČNÍ) | čeká na parametry hostingu od uživatele |
 
 ## Co je hotové z původní práce
 Task 1 starého plánu, commity `76a7444` a `107df97`:

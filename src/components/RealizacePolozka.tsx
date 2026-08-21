@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { FotoPlocha } from '@/components/FotoPlocha'
 import { Odhaleni } from '@/components/Odhaleni'
 import { NAZVY_KATEGORII } from '@/lib/kategorie'
-import type { RealizaceSFotkami } from '@/lib/ukazkovyObsah'
+import type { RealizaceSFotkami } from '@/lib/content/realizace'
 
 /**
  * Realizace není karta — je to fotografie s popiskem. Šířku a poměr stran

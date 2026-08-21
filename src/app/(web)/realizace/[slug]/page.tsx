@@ -3,15 +3,16 @@ import { notFound } from 'next/navigation'
 import { FotoPlocha } from '@/components/FotoPlocha'
 import { Navigace } from '@/components/Navigace'
 import { NAZVY_KATEGORII } from '@/lib/kategorie'
-import { UKAZKOVE_REALIZACE } from '@/lib/ukazkovyObsah'
+import { realizacePodleSlug, vsechnyRealizace } from '@/lib/content/realizace'
 
-export function generateStaticParams() {
-  return UKAZKOVE_REALIZACE.map((r) => ({ slug: r.slug }))
+export async function generateStaticParams() {
+  const realizace = await vsechnyRealizace()
+  return realizace.map((r) => ({ slug: r.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const realizace = UKAZKOVE_REALIZACE.find((r) => r.slug === slug)
+  const realizace = await realizacePodleSlug(slug)
 
   return {
     title: realizace ? `${realizace.nazev} — V Malby` : 'Realizace — V Malby',
@@ -24,7 +25,7 @@ export default async function RealizaceDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const realizace = UKAZKOVE_REALIZACE.find((r) => r.slug === slug)
+  const realizace = await realizacePodleSlug(slug)
 
   if (!realizace) notFound()
 

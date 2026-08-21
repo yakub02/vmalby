@@ -2,11 +2,17 @@ import Link from 'next/link'
 import { FotoPlocha } from '@/components/FotoPlocha'
 import { Navigace } from '@/components/Navigace'
 import { RealizacePolozka } from '@/components/RealizacePolozka'
-import { UKAZKOVE_CLANKY, UKAZKOVE_REALIZACE, UKAZKOVE_TEXTY } from '@/lib/ukazkovyObsah'
+import { vybraneRealizace } from '@/lib/content/realizace'
+import { vsechnyClanky } from '@/lib/content/clanek'
+import { nactiSiteTexts } from '@/lib/content/siteTexts'
 
-export default function DomuPage() {
-  const vybrane = UKAZKOVE_REALIZACE.filter((r) => r.vybrana)
-  const clanek = UKAZKOVE_CLANKY[0]
+export default async function DomuPage() {
+  const [vybrane, clanky, texty] = await Promise.all([
+    vybraneRealizace(4),
+    vsechnyClanky(),
+    nactiSiteTexts(),
+  ])
+  const clanek = clanky[0]
 
   return (
     <main>
@@ -19,7 +25,7 @@ export default function DomuPage() {
 
         <div className="uvod__text">
           <p className="popisek popisek--svetly">Praha — od roku 1992</p>
-          <h1 className="uvod__nadpis">{UKAZKOVE_TEXTY.heroNadpis}</h1>
+          <h1 className="uvod__nadpis">{texty.heroNadpis}</h1>
         </div>
 
         <div className="uvod__pata">
@@ -44,8 +50,8 @@ export default function DomuPage() {
 
       <section className="blok okraj">
         <p className="popisek">Ateliér</p>
-        <h2 className="blok__nadpis">{UKAZKOVE_TEXTY.oNasNadpis}</h2>
-        <p className="blok__text">{UKAZKOVE_TEXTY.oNasText}</p>
+        <h2 className="blok__nadpis">{texty.oNasNadpis}</h2>
+        <p className="blok__text">{texty.oNasText}</p>
         <div className="blok__rada">
           <div>
             <p className="popisek">Založeno</p>
@@ -79,8 +85,8 @@ export default function DomuPage() {
         <p className="popisek">Kontakt</p>
         <h2 className="blok__nadpis">Máte projekt, který potřebuje pořádný povrch?</h2>
         <p style={{ marginTop: '2rem' }}>
-          <a className="odkaz odkaz--velky" href={`mailto:${UKAZKOVE_TEXTY.kontaktEmail}`}>
-            {UKAZKOVE_TEXTY.kontaktEmail}
+          <a className="odkaz odkaz--velky" href={`mailto:${texty.kontaktEmail}`}>
+            {texty.kontaktEmail}
           </a>
         </p>
       </section>

@@ -3,7 +3,7 @@ import type { Kategorie } from '@prisma/client'
 import { Navigace } from '@/components/Navigace'
 import { RealizacePolozka } from '@/components/RealizacePolozka'
 import { KATEGORIE_PORADI, NAZVY_KATEGORII } from '@/lib/kategorie'
-import { UKAZKOVE_REALIZACE } from '@/lib/ukazkovyObsah'
+import { vsechnyRealizace } from '@/lib/content/realizace'
 
 export const metadata = {
   title: 'Realizace — V Malby',
@@ -22,9 +22,7 @@ export default async function RealizacePage({
   const { kategorie } = await searchParams
   const aktivni = jeKategorie(kategorie) ? kategorie : undefined
 
-  const realizace = aktivni
-    ? UKAZKOVE_REALIZACE.filter((r) => r.kategorie === aktivni)
-    : UKAZKOVE_REALIZACE
+  const realizace = await vsechnyRealizace(aktivni)
 
   return (
     <>
