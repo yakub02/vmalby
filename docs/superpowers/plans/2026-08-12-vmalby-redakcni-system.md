@@ -674,7 +674,7 @@ git commit -m "feat: add password login with signed session cookie and /sprava g
   - `nactiSiteTexts(): Promise<SiteTexts>`
   - typ `RealizaceSFotkami = Prisma.RealizaceGetPayload<{ include: { fotky: true } }>`
 
-- [ ] **Step 1: Realizace**
+- [x] **Step 1: Realizace**
 
 Vytvoř `src/lib/content/realizace.ts`:
 
@@ -718,7 +718,7 @@ export async function realizacePodleSlug(
 }
 ```
 
-- [ ] **Step 2: Články**
+- [x] **Step 2: Články**
 
 Vytvoř `src/lib/content/clanek.ts`:
 
@@ -735,7 +735,7 @@ export async function clanekPodleSlug(slug: string): Promise<Clanek | null> {
 }
 ```
 
-- [ ] **Step 3: Texty stránek**
+- [x] **Step 3: Texty stránek**
 
 Vytvoř `src/lib/content/siteTexts.ts`. Singleton musí existovat i na prázdné databázi, jinak by veřejné stránky padaly před prvním uložením v adminu:
 
@@ -754,12 +754,12 @@ export async function nactiSiteTexts(): Promise<SiteTexts> {
 }
 ```
 
-- [ ] **Step 4: Ověření**
+- [x] **Step 4: Ověření**
 
 Run: `npx tsc --noEmit`
 Expected: bez chyb. (Pokud Prisma typy neexistují, spusť `npx prisma generate`.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A

@@ -12,7 +12,12 @@ proběhla čistě (`prisma/migrations/20260821095539_init/`), `npx prisma genera
 taky. Task 1 je tím kompletní — commitnuto. **Pozor:** kontejner `vmalby-pg`
 je bez `--restart`, takže po restartu Dockeru/stroje ho bude potřeba znovu
 spustit ručně (`docker start vmalby-pg`, ne `docker run` — jméno je obsazené).
-Další na řadě: Task 4 (čtecí vrstva obsahu) z `plans/2026-08-12-vmalby-redakcni-system.md`.
+
+Navazně dokončen i **Task 4 (čtecí vrstva obsahu)** — `src/lib/content/realizace.ts`,
+`clanek.ts`, `siteTexts.ts` přesně dle plánu, žádné odchylky. `npx tsc --noEmit`,
+`npx eslint .` i `npx vitest run` (10 testů) čisté. Commitnuto zvlášť.
+Další na řadě: Task 5 (server actions Realizace + revalidace) z
+`plans/2026-08-12-vmalby-redakcni-system.md`.
 
 ## Session 5 (2026-08-20) — commit session 3/4 práce
 
