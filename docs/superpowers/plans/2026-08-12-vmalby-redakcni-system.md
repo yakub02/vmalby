@@ -781,7 +781,7 @@ git commit -m "feat: add typed content read layer over Prisma"
   - `ulozRealizaci(prevState: FormState, formData: FormData): Promise<FormState>`
   - `smazRealizaci(id: string): Promise<void>`
 
-- [ ] **Step 1: Napiš padající test revalidačních cest**
+- [x] **Step 1: Napiš padající test revalidačních cest**
 
 Vytvoř `src/lib/revalidace.test.ts`:
 
@@ -812,12 +812,12 @@ describe('revalidační cesty', () => {
 })
 ```
 
-- [ ] **Step 2: Spusť test, ať vidíš, že padá**
+- [x] **Step 2: Spusť test, ať vidíš, že padá**
 
 Run: `npx vitest run src/lib/revalidace.test.ts`
 Expected: FAIL — `Failed to resolve import "@/lib/revalidace"`.
 
-- [ ] **Step 3: Implementace cest**
+- [x] **Step 3: Implementace cest**
 
 Vytvoř `src/lib/revalidace.ts` (čistá funkce bez závislosti na Nextu, aby šla testovat samostatně):
 
@@ -835,7 +835,7 @@ export function cestyProSiteTexts(): string[] {
 }
 ```
 
-- [ ] **Step 4: Napiš padající test server action**
+- [x] **Step 4: Napiš padající test server action**
 
 Prisma i `next/cache` se mockují — test ověřuje chování akce, ne databázi. Vytvoř `src/lib/actions/realizace.test.ts`:
 
@@ -967,12 +967,12 @@ describe('smazRealizaci', () => {
 })
 ```
 
-- [ ] **Step 5: Spusť test, ať vidíš, že padá**
+- [x] **Step 5: Spusť test, ať vidíš, že padá**
 
 Run: `npx vitest run src/lib/actions/realizace.test.ts`
 Expected: FAIL — modul `@/lib/actions/realizace` neexistuje.
 
-- [ ] **Step 6: Implementace**
+- [x] **Step 6: Implementace**
 
 Vytvoř `src/lib/actions/realizace.ts`:
 
@@ -1037,12 +1037,12 @@ export async function smazRealizaci(id: string): Promise<void> {
 
 Pozn.: při úpravě se `slug` záměrně nemění — přepsaný slug by rozbil odkazy, které už někdo sdílel.
 
-- [ ] **Step 7: Spusť testy**
+- [x] **Step 7: Spusť testy**
 
 Run: `npx vitest run`
 Expected: PASS (slug, session, revalidace, realizace).
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add -A

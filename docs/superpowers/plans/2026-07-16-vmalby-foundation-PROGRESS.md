@@ -16,7 +16,12 @@ spustit ručně (`docker start vmalby-pg`, ne `docker run` — jméno je obsazen
 Navazně dokončen i **Task 4 (čtecí vrstva obsahu)** — `src/lib/content/realizace.ts`,
 `clanek.ts`, `siteTexts.ts` přesně dle plánu, žádné odchylky. `npx tsc --noEmit`,
 `npx eslint .` i `npx vitest run` (10 testů) čisté. Commitnuto zvlášť.
-Další na řadě: Task 5 (server actions Realizace + revalidace) z
+
+A rovnou i **Task 5 (server actions Realizace + revalidace)** — `src/lib/revalidace.ts`
+(cesty pro revalidaci) a `src/lib/actions/realizace.ts` (`ulozRealizaci`/`smazRealizaci`,
+Prisma a `next/cache` mockované v testech). Žádné odchylky od plánu. `npx tsc --noEmit`,
+`npx eslint .` i `npx vitest run` (19 testů) čisté. Commitnuto zvlášť.
+Další na řadě: Task 6 (server actions Články a Texty stránek) z
 `plans/2026-08-12-vmalby-redakcni-system.md`.
 
 ## Session 5 (2026-08-20) — commit session 3/4 práce
