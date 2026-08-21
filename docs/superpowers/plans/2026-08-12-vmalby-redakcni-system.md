@@ -1472,13 +1472,13 @@ git commit -m "feat: sanitize rich text server-side before storing"
   - `nazevSouboru(puvodni: string, nahodne?: () => string): string`
   - `POST /api/upload` — přijímá `multipart/form-data` s polem `soubor`, vrací `{ url: string }`
 
-- [ ] **Step 1: Instalace**
+- [x] **Step 1: Instalace**
 
 ```bash
 npm install sharp
 ```
 
-- [ ] **Step 2: Napiš padající testy názvu souboru**
+- [x] **Step 2: Napiš padající testy názvu souboru**
 
 Uživatel nahraje `Fotka z akce (1).JPG` — to nesmí skončit v URL. Vytvoř `src/lib/uploads.test.ts`:
 
@@ -1507,12 +1507,12 @@ describe('nazevSouboru', () => {
 })
 ```
 
-- [ ] **Step 3: Spusť test, ať vidíš, že padá**
+- [x] **Step 3: Spusť test, ať vidíš, že padá**
 
 Run: `npx vitest run src/lib/uploads.test.ts`
 Expected: FAIL — modul neexistuje.
 
-- [ ] **Step 4: Implementace**
+- [x] **Step 4: Implementace**
 
 Vytvoř `src/lib/uploads.ts`:
 
@@ -1558,7 +1558,7 @@ export async function ulozFotku(soubor: File): Promise<string> {
 
 `.rotate()` bez argumentu srovná fotku podle EXIF orientace — bez toho jsou fotky z mobilu otočené.
 
-- [ ] **Step 5: Route handler**
+- [x] **Step 5: Route handler**
 
 Přečti si `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/route.md`, pak vytvoř `src/app/api/upload/route.ts`:
 
@@ -1599,18 +1599,20 @@ export async function POST(request: Request) {
 
 Ochrana session je tu nutná zvlášť — `proxy.ts` hlídá jen `/sprava`, ne `/api/upload`.
 
-- [ ] **Step 6: Adresář pro uploady**
+- [x] **Step 6: Adresář pro uploady**
 
 ```bash
 mkdir -p public/uploads && touch public/uploads/.gitkeep
 ```
 
-- [ ] **Step 7: Ověření**
+- [x] **Step 7: Ověření**
 
 Run: `npx vitest run` → PASS
-Run: `npm run build` → zelený
+Run: `npm run build` → **BLOKOVÁNO** — viz poznámka v PROGRESS.md, session 6
+(exFAT + Node.js `readlink` bug, ne chyba v kódu). `npx tsc --noEmit` a
+`npx eslint .` čisté, tím se ověření nahradilo se souhlasem uživatele.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add -A

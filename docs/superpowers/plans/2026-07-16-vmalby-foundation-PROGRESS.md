@@ -40,7 +40,39 @@ Neřešeno, protože oprava (`npm audit fix --force`) by upgradovala `next` na 1
 `prisma` na 6.12.0 — mimo scope a proti global constraint plánu. Řekni uživateli, ať
 rozhodne, jestli/kdy tohle řešit samostatně.
 
-Další na řadě: Task 8 (nahrávání fotek) z `plans/2026-08-12-vmalby-redakcni-system.md`.
+A rovnou i **Task 8 (nahrávání fotek)** — `src/lib/uploads.ts` (`nazevSouboru`,
+`ulozFotku` se `sharp` resize+webp), `src/app/api/upload/route.ts` (chráněno session
+cookie zvlášť, protože `proxy.ts` hlídá jen `/sprava`), `public/uploads/.gitkeep`.
+**Skutečný bug objevený testem** (ne formátovací rozdíl): plánová implementace
+`nazevSouboru` používala `puvodni.replace(/\.[^.]*$/, '')` na celý vstup včetně
+cesty — u `../../etc/passwd` regex sežral skoro celý řetězec jako "příponu" a
+skončilo to na fallbacku `foto-*.webp` místo `etc-passwd-*.webp`. Opraveno: přípona
+se teď ořezává jen z posledního segmentu za `/`, zbytek cesty jde do `slugify`
+beze změny — **implementace opravena, ne test** (na rozdíl od Tasku 7, kde šlo
+jen o formát výstupu knihovny).
+
+**⚠️ Zásadní infrastrukturní zjištění, netýká se Tasku 8 samotného:**
+`npm run build` (Turbopack i `--webpack`) na tomhle stroji **nejde spustit vůbec**,
+nezávisle na kódu. `E:` je **naformátovaný jako exFAT**, ne NTFS. Turbopack build
+padá na `failed to create junction point` (NTFS junction pro nativní balíček
+`sharp` — exFAT junction pointy nepodporuje vůbec, to není otázka oprávnění).
+`next build --webpack` padá jinak: `EISDIR: illegal operation on a directory,
+readlink`, a to i na starých souborech (`src/app/prihlaseni/page.tsx`, existující
+před touto session) — ověřeno přímo přes `fs.readlinkSync()` v Node: na téhle
+exFAT+Node kombinaci vrací `readlink()` na běžný soubor `EISDIR` místo očekávaného
+`EINVAL`, a webpack to bere jako fatal error místo "není symlink, pokračuj".
+**Tohle není regrese z téhle session** — `npm run build` zřejmě nikdy předtím
+neproběhl úspěšně na tomhle stroji, jen `next dev` (ověřováno přes `curl`).
+Uživatel rozhodl pokračovat bez lokálního `npm run build` ověření (nahrazeno
+`tsc --noEmit` + `eslint .`, které oboje projdou) a řešit to případně až na
+hostingu v Tasku 11 (pravděpodobně Linux/NTFS, kde tenhle problém nejspíš
+nenastane). **Než se půjde na Task 11 nebo cokoliv, co vyžaduje `npm run build`
+lokálně, tohle je potřeba vyřešit** — buď přesunout projekt na NTFS disk/složku,
+nebo pracovat z WSL.
+
+`npx tsc --noEmit` a `npx eslint .` čisté. Commitnuto zvlášť.
+
+Další na řadě: Task 9 (redakční rozhraní /sprava) z `plans/2026-08-12-vmalby-redakcni-system.md`.
 
 ## Session 5 (2026-08-20) — commit session 3/4 práce
 
