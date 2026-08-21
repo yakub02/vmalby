@@ -1608,9 +1608,9 @@ mkdir -p public/uploads && touch public/uploads/.gitkeep
 - [x] **Step 7: Ověření**
 
 Run: `npx vitest run` → PASS
-Run: `npm run build` → **BLOKOVÁNO** — viz poznámka v PROGRESS.md, session 6
-(exFAT + Node.js `readlink` bug, ne chyba v kódu). `npx tsc --noEmit` a
-`npx eslint .` čisté, tím se ověření nahradilo se souhlasem uživatele.
+Run: `npm run build` → bylo blokováno na `E:\_WORK\_VMALBY` (exFAT + Node.js
+`readlink` bug, ne chyba v kódu) — po přesunu projektu na `C:\Users\kvrag\Documents\vmalby`
+(NTFS) build **zelený**, viz PROGRESS.md session 6.
 
 - [x] **Step 8: Commit**
 
@@ -2301,17 +2301,18 @@ export default async function SpravaTextyPage() {
 
 Seznam `POLE` musí odpovídat `POVOLENA_POLE` v `src/lib/actions/siteTexts.ts` (Task 6) — pole, které tu chybí, půjde uložit jen přes ruční request, a pole navíc se tiše zahodí.
 
-- [ ] **Step 10: Ověření administrace** ⚠️ **BLOKOVÁNO** — viz PROGRESS.md, session 6.
-`next dev` na tomhle stroji padá na stejný exFAT junction-point problém jako
-`npm run build` v Tasku 8, tentokrát na `pg` — jakákoli `/sprava` routa, co
-sáhne na Prisma, vrací HTTP 500 (`TurbopackInternalError: failed to create
-junction point`). Manuální průchod adminem podle kroků níže **není ověřeno**.
-Nahrazeno: `npx tsc --noEmit` a `npx eslint .`, oboje čisté. Routing/redirect
-(`/sprava` → `/prihlaseni`, `/sprava/realizace/novy` → 200 s formulářem) ověřen
-alespoň pro nepřihlášený stav a přes `curl` s ručně podepsaným session cookie
-tam, kde to nespadlo na `pg`.
+- [x] **Step 10: Ověření administrace** — ČÁSTEČNĚ, po přesunu na `C:` (NTFS,
+viz PROGRESS.md). Blocker z `E:\_WORK\_VMALBY` (exFAT junction-point na `pg`)
+je pryč: `npm run build` zelený, `npm run dev` + všech 6 `/sprava*` routy
+vrací 200 přes `curl` s ručně podepsaným session cookie (dřív 500), redirect
+nepřihlášeného na `/prihlaseni?pokracovat=...` funguje (307), `/sprava/texty`
+i `/sprava/realizace` mají v HTML správné formulářové prvky. **Neověřeno
+skutečným prohlížečem** (Tiptap editor, upload fotky přes `<input type=file>`,
+submit/uložení/smazání přes React Server Actions — to `curl` nezvládne
+odsimulovat). Kroky 1–7 níže tedy zůstávají jako TODO pro ruční klik v
+prohlížeči, ale nejsou už ničím blokované.
 
-Zbytek kroku pro budoucí referenci, až bude filesystém vyřešený:
+Zbytek kroku pro budoucí referenci — proklikej v prohlížeči:
 1. `/sprava` přesměruje na `/sprava/realizace`
 2. „+ Přidat realizaci" → vyplň, vlož fotku do popisu, ulož → objeví se v seznamu
 3. „Upravit" → změň název → uloží se

@@ -1,6 +1,22 @@
 # V Malby — stav exekuce
 
-Aktualizováno: 2026-08-21 (session 6, pokračování)
+Aktualizováno: 2026-08-21 (session 6, vyřešen exFAT blocker)
+
+## ⚠️ Projekt se přesunul z `E:\_WORK\_VMALBY` na `C:\Users\kvrag\Documents\vmalby`
+
+exFAT blocker popsaný níže je vyřešen — **repo je teď na GitHubu
+(`https://github.com/yakub02/vmalby`, remote `origin`, branch `master`) a
+klonováno na `C:\Users\kvrag\Documents\vmalby`, kde `C:` je NTFS.** Ověřeno
+přímo: `npm install`, `npx prisma generate`, `npm run build` (zelený, včetně
+`ƒ Proxy (Middleware)` řádku), `npm run dev` + `/sprava/*` routy přes `curl`
+s ručně podepsaným session cookie — všechny vrátily 200 (dřív 500 na `E:`).
+`.env.local` (lokální tajemství, není v gitu) zkopírováno ručně do nového
+klonu, `DATABASE_URL` pořád ukazuje na stejný Docker kontejner `vmalby-pg`
+(port 5433) — funguje mezidiskově, protože je to jen TCP spojení.
+**Další sessions by měly začínat s working directory `C:\Users\kvrag\Documents\vmalby`,
+ne `E:\_WORK\_VMALBY`.** `E:\_WORK\_VMALBY` zůstává jako historická kopie se
+stejnou historií (pushnuto před klonováním), ale nepokračuj v ní dál — commituj
+a pushuj z `C:`, aby oba adresáře nerozjely rozdílnou historii.
 
 ## Session 6 (2026-08-21), pokračování — Task 9 (redakční rozhraní /sprava)
 
